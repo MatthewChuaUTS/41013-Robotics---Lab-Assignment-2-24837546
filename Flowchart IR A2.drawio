@@ -1,0 +1,70 @@
+<mxfile host="Electron" modified="2024-09-25T00:42:10.517Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/24.2.5 Chrome/120.0.6099.109 Electron/28.1.0 Safari/537.36" etag="NYHCIcHy--MHfLXt-vTL" version="24.2.5" type="device">
+  <diagram name="Page-1" id="bADCwiOJgRBZCtNNeKfe">
+    <mxGraphModel dx="1706" dy="1007" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="87UH9Kv8cRzi7-ktg5hS-1" value="Get Dish" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#16F016;" vertex="1" parent="1">
+          <mxGeometry x="40" y="80" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="87UH9Kv8cRzi7-ktg5hS-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;strokeColor=#16F016;" edge="1" parent="1" source="87UH9Kv8cRzi7-ktg5hS-1" target="87UH9Kv8cRzi7-ktg5hS-1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="87UH9Kv8cRzi7-ktg5hS-3" value="Get Sponge" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#02D8F0;" vertex="1" parent="1">
+          <mxGeometry x="200" y="80" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="87UH9Kv8cRzi7-ktg5hS-4" value="Dunk Dish" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#16F016;" vertex="1" parent="1">
+          <mxGeometry x="40" y="160" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="87UH9Kv8cRzi7-ktg5hS-6" value="Hold Dish" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#16F016;" vertex="1" parent="1">
+          <mxGeometry x="40" y="240" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="87UH9Kv8cRzi7-ktg5hS-7" value="Scrub" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#02D8F0;" vertex="1" parent="1">
+          <mxGeometry x="200" y="240" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="87UH9Kv8cRzi7-ktg5hS-8" value="Drop Sponge" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#02D8F0;" vertex="1" parent="1">
+          <mxGeometry x="200" y="320" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="87UH9Kv8cRzi7-ktg5hS-9" value="Hold Dish" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#02D8F0;" vertex="1" parent="1">
+          <mxGeometry x="200" y="400" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="87UH9Kv8cRzi7-ktg5hS-10" value="Get Sponge" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#16F016;" vertex="1" parent="1">
+          <mxGeometry x="40" y="440" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="87UH9Kv8cRzi7-ktg5hS-11" value="Scrub" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#16F016;" vertex="1" parent="1">
+          <mxGeometry x="40" y="520" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="87UH9Kv8cRzi7-ktg5hS-13" value="Drop Sponge" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#16F016;" vertex="1" parent="1">
+          <mxGeometry x="40" y="600" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="87UH9Kv8cRzi7-ktg5hS-14" value="Dunk Dish" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#02D8F0;" vertex="1" parent="1">
+          <mxGeometry x="200" y="600" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="87UH9Kv8cRzi7-ktg5hS-15" value="Get Towel" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#16F016;" vertex="1" parent="1">
+          <mxGeometry x="40" y="680" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="87UH9Kv8cRzi7-ktg5hS-16" value="Hold" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#02D8F0;" vertex="1" parent="1">
+          <mxGeometry x="200" y="760" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="87UH9Kv8cRzi7-ktg5hS-17" value="Dry Dish" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#16F016;" vertex="1" parent="1">
+          <mxGeometry x="40" y="760" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="87UH9Kv8cRzi7-ktg5hS-18" value="Place Dish" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#02D8F0;" vertex="1" parent="1">
+          <mxGeometry x="200" y="840" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="87UH9Kv8cRzi7-ktg5hS-19" value="Reset Arm" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#02D8F0;" vertex="1" parent="1">
+          <mxGeometry x="200" y="920" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="87UH9Kv8cRzi7-ktg5hS-20" value="Reset Arm" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#16F016;" vertex="1" parent="1">
+          <mxGeometry x="40" y="920" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="87UH9Kv8cRzi7-ktg5hS-21" value="DOBOT" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#16F016;" vertex="1" parent="1">
+          <mxGeometry x="40" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="87UH9Kv8cRzi7-ktg5hS-22" value="NIRYO ONE" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#02D8F0;" vertex="1" parent="1">
+          <mxGeometry x="200" width="120" height="40" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
