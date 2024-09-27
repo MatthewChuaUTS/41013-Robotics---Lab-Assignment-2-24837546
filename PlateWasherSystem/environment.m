@@ -37,7 +37,3 @@ function environment ()
     plotLightCurtain();
  
 end
-
-
-
-
