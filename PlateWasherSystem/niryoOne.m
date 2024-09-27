@@ -1,30 +1,10 @@
-% L1=Link('alpha',-pi/2,'a',0.103, 'd',0.70, 'offset',0, 'qlim',[deg2rad(-170), deg2rad(170)]);
-% L2=Link('alpha',0,'a',0.80, 'd',0, 'offset',-pi/2, 'qlim',[deg2rad(-90), deg2rad(135)]);
-% L3=Link('alpha',pi/2,'a',-0.210, 'd',0, 'offset',pi/2, 'qlim',[deg2rad(-80), deg2rad(165)]);
-% L4=Link('alpha',-pi/2,'a',0, 'd',0.30, 'offset',0, 'qlim',[deg2rad(-185), deg2rad(185)]);
-% L5=Link('alpha',pi/2,'a',0.18, 'd',0, 'offset',0, 'qlim',[deg2rad(-120), deg2rad(120)]);
-% L6=Link('alpha',0,'a',0.55, 'd',0.237, 'offset',0, 'qlim',[deg2rad(-360), deg2rad(360)]);
-% 
-% densoRobot = SerialLink([L1 L2 L3 L4 L5 L6],'name','Denso VM6083G');
-% densoRobot.name = 'Denso VM6083G';
-% % Use glyphs to draw robot, don't display the name
-% densoRobot.plotopt = {'nojoints', 'noname', 'noshadow', 'nowrist'}; %
-% 
-% 
-% densoRobot.plot(zeros(1,6)); % plot vector [0 0 0 0 0 0]
+L1=Link('alpha',-pi/2,'a',0, 'd',0.08, 'offset',0, 'qlim',[deg2rad(-170), deg2rad(170)]);
+L2=Link('alpha',0,'a',0.21, 'd',0, 'offset',-pi/2, 'qlim',[deg2rad(-90), deg2rad(135)]);
+L3=Link('alpha',-pi/2,'a',0.0415, 'd',0.03, 'offset',0, 'qlim',[deg2rad(-80), deg2rad(165)]);
+L4=Link('alpha',pi/2,'a',0, 'd',-0.18, 'offset',0, 'qlim',[deg2rad(-185), deg2rad(185)]);
+L5=Link('alpha',pi/2,'a',0.0237, 'd',0.055, 'offset',0, 'qlim',[deg2rad(-120), deg2rad(120)]);
+L6=Link('alpha',0,'a',0, 'd',0, 'offset',0, 'qlim',[deg2rad(-360), deg2rad(360)]);
 
-
-
-% L1 = Link('d',0,'a',1,'alpha',0,'qlim',[-pi pi])
-% L2 = Link('d',0,'a',1,'alpha',0,'qlim',[-pi pi])
-% L3 = Link('d',0,'a',1,'alpha',0,'qlim',[-pi pi])
-% 
-% robot = SerialLink([L1 L2 L3],'name','myRobot')                     % Generate the model
-% 
-% workspace = [-4 4 -4 4 -4 4];                                       % Set the size of the workspace when drawing the robot        
-% scale = 0.5;        
-% q = zeros(1,3);                                                     % Create a vector of initial joint angles        
-% robot.plot(q,'workspace',workspace,'scale',scale);                  % Plot the robot
 
 % Denso
 % L1=Link('alpha',-pi/2,'a',0.180, 'd',0.475, 'offset',0, 'qlim',[deg2rad(-170), deg2rad(170)]);
@@ -37,17 +17,9 @@
 
 
 % Niryo
-% L1=Link('alpha',-pi/2,'a',0, 'd',0.08, 'offset',0, 'qlim',[deg2rad(-170), deg2rad(170)]);
-% L2=Link('alpha',0,'a',0.210, 'd',0, 'offset',-pi/2, 'qlim',[deg2rad(-90), deg2rad(135)]);
-% L3=Link('alpha',0,'a',-0.03, 'd',0.0415, 'offset',pi/2, 'qlim',[deg2rad(-80), deg2rad(165)]);
-% L4=Link('alpha',-pi/2,'a',0, 'd',0.30, 'offset',0, 'qlim',[deg2rad(-185), deg2rad(185)]);
-% L5=Link('alpha',pi/2,'a',0.18, 'd',0, 'offset',0, 'qlim',[deg2rad(-120), deg2rad(120)]);
-% L6=Link('alpha',0,'a',0.55, 'd',0.237, 'offset',0, 'qlim',[deg2rad(-360), deg2rad(360)]);
-
-% 
-L1=Link('alpha',0,'a',0.08, 'd',0, 'offset',0, 'qlim',[deg2rad(-170), deg2rad(170)]);
-L2=Link('alpha',0,'a',0.80, 'd',0, 'offset',-pi/2, 'qlim',[deg2rad(-90), deg2rad(135)]);
-L3=Link('alpha',pi/2,'a',-0.210, 'd',0, 'offset',pi/2, 'qlim',[deg2rad(-80), deg2rad(165)]);
+L1=Link('alpha',-pi/2,'a',0, 'd',0.08, 'offset',0, 'qlim',[deg2rad(-170), deg2rad(170)]);
+L2=Link('alpha',0,'a',0.210, 'd',0, 'offset',-pi/2, 'qlim',[deg2rad(-90), deg2rad(135)]);
+L3=Link('alpha',0,'a',-0.03, 'd',0.0415, 'offset',pi/2, 'qlim',[deg2rad(-80), deg2rad(165)]);
 L4=Link('alpha',-pi/2,'a',0, 'd',0.30, 'offset',0, 'qlim',[deg2rad(-185), deg2rad(185)]);
 L5=Link('alpha',pi/2,'a',0.18, 'd',0, 'offset',0, 'qlim',[deg2rad(-120), deg2rad(120)]);
 L6=Link('alpha',0,'a',0.55, 'd',0.237, 'offset',0, 'qlim',[deg2rad(-360), deg2rad(360)]);
@@ -59,18 +31,6 @@ q = zeros(1,6);                                                     % Create a v
 robot.plot(q,'workspace',workspace,'scale',scale);                  % Plot the robot
 
 
-
-% L1 = Link('d',0,'a',1,'alpha',0,'qlim',[-pi pi])
-% L2 = Link('d',0,'a',1,'alpha',0,'qlim',[-pi pi])
-% L3 = Link('d',0,'a',1,'alpha',0,'qlim',[-pi pi])
-% 
-% robot = SerialLink([L1 L2 L3],'name','myRobot')                     % Generate the model
-% 
-% workspace = [-4 4 -4 4 -4 4];                                       % Set the size of the workspace when drawing the robot        
-% scale = 0.5;        
-% q = zeros(1,3);                                                     % Create a vector of initial joint angles        
-% robot.plot(q,'workspace',workspace,'scale',scale);                  % Plot the robot
-% 
 
 
 classdef niryoOne < RobotBaseClass
