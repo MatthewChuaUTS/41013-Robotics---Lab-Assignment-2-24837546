@@ -1,0 +1,28 @@
+function environment ()
+
+    clf;
+    view(3)
+    axis equal
+    axis auto
+    hold on 
+
+    % place Objects features
+
+    % Place floor
+    surf([ 0,0; 1.5,1.5] ...
+        ,[-1,0.6;-1,0.6] ...
+        ,[-0.7971,-0.7971;-0.7971,-0.7971] ... %height of floor
+        ,'CData',imread('floor.png') ...
+        ,'FaceColor','texturemap');                                            
+
+    % Place plyFiles
+    PlaceObject('stillEnvironment.ply',[0,0,-0.0427]); % z=0 is where the robots stand
+    PlaceObject('eStop.ply',[1.4,-0.1,0]);     
+    PlaceObject('fireExtinguisher.ply', [0, -0.9, -0.6]);   
+    PlaceObject('hand.ply', [1.4,-0.1,0.2]);
+    PlaceObject('lightCurtain.ply', [1.4,-0.1,0.2]);
+end
+
+
+
+
