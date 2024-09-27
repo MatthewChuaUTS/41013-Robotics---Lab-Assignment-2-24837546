@@ -1,6 +1,6 @@
 function plotLightCurtain()
     bottomLeft = [0, -1, -0.7971];
-    topRight = [1.5, -1, 0];
+    topRight = [1.45, -1, 0];
     laserCenters = 0.1;
     laserArraySize = 1/laserCenters;
     laserStartPoint = zeros(laserArraySize, 3);
