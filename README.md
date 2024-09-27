@@ -10,6 +10,7 @@
 - [ ] Model a new 6DOF (or higher) industrial robot arm not in the Toolbox
 	- [ ] Exactly like the LinearUR3, except following the DH parameters of our chosen robot
 - [ ] Create a simulated environment for your chosen scenario
+	- [x] Implement static environment
 - [ ] Implement a MATLAB/Python graphical user interface (GUI) with:
    - [ ] Advanced "teach" functionality
    - [ ] Individual joint movements
