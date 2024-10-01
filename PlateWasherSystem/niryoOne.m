@@ -2,7 +2,7 @@ classdef niryoOne < RobotBaseClass
     %% UR3 Universal Robot 3kg payload robot model on linear rails
 
     properties(Access = public)   
-        plyFileNameStem = 'Niryo'; % UR3e plyread
+        plyFileNameStem = 'niryoOne'; % UR3e plyread
     end
 
     methods
@@ -22,7 +22,7 @@ classdef niryoOne < RobotBaseClass
             end
 
             self.CreateModel();
-			self.model.base = self.model.base.T * baseTr * trotx(pi/2) * troty(pi/2); % rotx &y makes it stand up
+			self.model.base = self.model.base.T * baseTr; % rotx &y makes it stand up
             self.model.tool = self.toolTr;
             self.PlotAndColourRobot();
             self.model.teach([0 -pi/2 0 0 0 0]);
