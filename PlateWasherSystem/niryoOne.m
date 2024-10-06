@@ -33,12 +33,12 @@ classdef niryoOne < RobotBaseClass
 
 %% CreateModel
         function CreateModel(self)
-            link(1) = Link([0      0.08       0       -pi/2]); 
-            link(2) = Link([0      0          0.21    0]);
-            link(3) = Link([0      0.03       0.0415  -pi/2]);
-            link(4) = Link([0      -0.18      0       pi/2]);
-            link(5) = Link([0      -0.055     0.0237  pi/2]);
-            link(6) = Link([0      0          0       0]);
+            link(1) = Link([0      0.103      0       -pi/2]);
+            link(2) = Link([0      0          0.08    0]); 
+            link(3) = Link([0      0          0.21    0]);
+            link(4) = Link([0      -0.18      0       -pi/2]);
+            link(5) = Link([0      0          0       pi/2]);
+            link(6) = Link([0      0          0.0055       0]);
             
             link(1).qlim = [-175 175]*pi/180;
             link(2).qlim = [-90 36.7]*pi/180;
