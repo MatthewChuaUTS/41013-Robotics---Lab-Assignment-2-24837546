@@ -6,7 +6,7 @@ environment();
 % Set up Robot 1
 niryoOneCurrentJointPosition = [0, 0, 0, 0, 0, 0];  
 myNiryoOne = niryoOne(transl(0.54, -0.01, 0));  
-myNiryoOne.model.animate(UR3CurrentJointPosition);  
+myNiryoOne.model.animate(niryoOneCurrentJointPosition);  
 
 % Set up Robot 2
 

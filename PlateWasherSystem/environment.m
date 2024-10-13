@@ -34,6 +34,7 @@ function environment ()
     PlaceObject('lightCurtain.ply', [0, -1, -0.7971]);
     PlaceObject('lightCurtain.ply', [1.45, -1, -0.7971]);
     PlaceObject('piggy.ply', [0.8, -1.3, -0.7971]);    
+    PlaceObject('sponge.ply', [0.75, -0.06, 0]);    
     plotLightCurtain();
  
 end
