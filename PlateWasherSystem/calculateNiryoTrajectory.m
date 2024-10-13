@@ -1,0 +1,3 @@
+function niryoTrajectory = calculateNiryoTrajectory()
+    
+end

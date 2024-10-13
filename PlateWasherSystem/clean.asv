@@ -14,7 +14,7 @@ function clean(myNiryoOne, myUR3)
             myUR3.model.animate(ur3Trajectory(currentStep,:)); 
         else
             disp('Emergency stop activated! Cleaning process paused.');
-            currentStep = currentStep - 1;
+            
         end
     end
 end
