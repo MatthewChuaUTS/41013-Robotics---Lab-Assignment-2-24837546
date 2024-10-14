@@ -1,4 +1,4 @@
-function [qmatrix] = calculateUr3Trajectory(myUr3, spongePosition)
+function [combinedQmatrix] = calculateUr3Trajectory(myUr3, spongePosition)
         % spongePosition = [0.748, -0.06, 0.05]
         % Calculate movement to the brick from last position
         myUR3.model.fkine(currentJointPosition)
