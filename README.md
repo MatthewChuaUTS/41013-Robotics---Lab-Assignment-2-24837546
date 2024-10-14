@@ -7,8 +7,8 @@
 - [x] Select one existing robot arm from the Robotics Toolbox
 - [x] Setup Github
 - [x] Teach Github
-- [ ] Model a new 6DOF (or higher) industrial robot arm not in the Toolbox
-	- [ ] Exactly like the LinearUR3, except following the DH parameters of our chosen robot
+- [X] Model a new 6DOF (or higher) industrial robot arm not in the Toolbox
+	- [X] Exactly like the LinearUR3, except following the DH parameters of our chosen robot
 - [ ] Create a simulated environment for your chosen scenario
 	- [x] Implement static environment
 - [ ] Implement a MATLAB/Python graphical user interface (GUI) with:
@@ -17,14 +17,14 @@
    - [ ] Cartesian movements
 - [ ] Incorporate a functional e-stop (simulated and real)
 - [ ] Add safety features to the simulated environment:
-   - [ ] Barriers
+   - [X] Barriers
    - [ ] Warning signs/lights/sirens
 - [ ] Implement collision detection and avoidance
-- [ ] Set up a code repository (preferably GitHub) for the project
-- [ ] Complete and submit the Week 7 Proposal:
-    - [ ] Discuss with lead tutors
-    - [ ] Submit details via Google Form
-- [ ] Update and improve individual SWMS and Risk Assessment from Assignment 1
+- [X] Set up a code repository (preferably GitHub) for the project
+- [X] Complete and submit the Week 7 Proposal:
+    - [X] Discuss with lead tutors
+    - [X] Submit details via Google Form
+- [X] Update and improve individual SWMS and Risk Assessment from Assignment 1
 - [ ] Create a 1-minute promotional video for Week 11 submission
 - [ ] Develop the final system demonstration:
     - [ ] Integrate two robot arms
