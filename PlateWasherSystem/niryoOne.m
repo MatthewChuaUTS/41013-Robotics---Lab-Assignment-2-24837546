@@ -25,7 +25,7 @@ classdef niryoOne < RobotBaseClass
 			self.model.base = self.model.base.T * baseTr; % rotx &y makes it stand up
             self.model.tool = self.toolTr;
             self.PlotAndColourRobot();
-            self.model.teach([0 0 0 0 0 0]); % I commented this out
+            % self.model.teach([0 0 0 0 0 0]); % I commented this out
             % because it rendered with the green and white checkerboard in
             % the main file. Feel free to uncomment it if you need to debug
             % and stuff.
