@@ -24,7 +24,7 @@ myUR3.model.plot3d(UR3CurrentJointPosition);
 camlight
 myUR3.model.teach;
 
-% % Robot collision to pointcloud (case1 = pig to lightcurtain)
+% % Robot collision to pointcloud (case1 = lightcurtain)
 % [Y,Z] = meshgrid(0:0.05:0.75,0:0.05:0.75);
 % sizeMat = size(Y);
 % X = repmat(0.75,sizeMat(1),sizeMat(2));
