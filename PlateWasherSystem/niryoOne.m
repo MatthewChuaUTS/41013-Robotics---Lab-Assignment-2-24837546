@@ -37,7 +37,7 @@ classdef niryoOne < RobotBaseClass
 %% CreateModel
         function CreateModel(self)
             link(1) = Link('d',0.183,'a',0,'alpha',pi/2,'qlim',deg2rad([-175 175]), 'offset',0); %
-            link(2) = Link('d',0,'a',-0.21,'alpha',0,'qlim', deg2rad([-90 36.7]), 'offset',-pi/2); %
+            link(2) = Link('d',0,'a',-0.21,'alpha',0,'qlim', deg2rad([-90 90]), 'offset',-pi/2); %
             link(3) = Link('d',0,'a',-0.03,'alpha',pi/2,'qlim', deg2rad([-80 90]), 'offset', 0);
             link(4) = Link('d',0.2215,'a',0,'alpha',pi/2,'qlim',deg2rad([-175 175]),'offset', 0);
             link(5) = Link('d',0,'a',0,'alpha',-pi/2,'qlim',deg2rad([-100 110]), 'offset',pi); % ignore offset for now
