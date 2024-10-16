@@ -19,3 +19,4 @@ piggy = RobotPiggy(transl(0.8, -1.3, -0.7971));
 
 sensorTrip = 0;
 % nothing changed - just note SerialLink
+% piggy.movePiggy(transl(0.8, -1, -0.7971))
