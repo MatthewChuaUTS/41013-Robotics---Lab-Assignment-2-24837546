@@ -1,4 +1,5 @@
 function safetyFlag = safety()
+    % will need to interact with env as well
     eStopFlag = eStop(); % Check both e-stop buttons
     barrierFlag = barrierDisruption(); % Check barrier and pig
     

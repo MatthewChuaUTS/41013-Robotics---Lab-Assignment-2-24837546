@@ -53,7 +53,7 @@ classdef environment < handle
             self.sponge = PlaceObject('sponge.ply', [0.75, -0.06, 0]);
             self.setWarningLight();
         end
-        
+
         function placeRoom(self)
             % Constants for room dimensions (local to this function)
             FLOOR_HEIGHT = -0.7971;
@@ -89,7 +89,6 @@ classdef environment < handle
             PlaceObject('fireExtinguisher.ply', [1.3, -0.1, -0.7971]);   
             PlaceObject('lightCurtain.ply', [0, -1, -0.7971]);
             PlaceObject('lightCurtain.ply', [1.45, -1, -0.7971]);
-            PlaceObject('piggy.ply', [0.8, -1.3, -0.7971]);    
             self.plotLightCurtain();
         end
 

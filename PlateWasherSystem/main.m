@@ -1,7 +1,7 @@
 clf;
 clear all;
 
-env = environment.setupEnvironment();
+env = environment();
 
 % Set up Robot 1
 niryoOneCurrentJointPosition = [0, 0, 0, 0, 0, 0];  
@@ -15,5 +15,7 @@ UR3CurrentJointPosition = [0, -pi/2, 0, 0, -pi/2, 0];
 myUR3 = UR3(transl(1.02, -0.01, 0));                                              
 myUR3.model.animate(UR3CurrentJointPosition); 
 
+piggy = RobotPiggy(transl(0.8, -1.3, -0.7971));
+
 sensorTrip = 0;
-% nothing changed - just note
+% nothing changed - just note SerialLink
