@@ -1,7 +1,7 @@
 clf;
 clear all;
 
-environment();
+env = environment.setupEnvironment();
 
 % Set up Robot 1
 niryoOneCurrentJointPosition = [0, 0, 0, 0, 0, 0];  

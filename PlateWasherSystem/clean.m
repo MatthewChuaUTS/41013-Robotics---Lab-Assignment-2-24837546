@@ -5,8 +5,8 @@ function clean(myNiryoOne, myUR3)
     resumeFlag = 1;
 
     % Calculate Trajectories
-    niryoTrajectoryQmatrix = calculateNiryoTrajectory(totalSteps);
-    ur3TrajectoryQmatrix = calculateUr3Trajectory(totalSteps);
+    niryoTrajectoryQmatrix = calculateNiryoTrajectory(myNiryoOne, totalSteps);
+    ur3TrajectoryQmatrix = calculateUr3Trajectory(myUR3, totalSteps);
 
     currentStep = 1;
     while currentStep <= totalSteps % <= is correct

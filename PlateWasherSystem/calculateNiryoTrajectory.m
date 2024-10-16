@@ -1,3 +1,2 @@
-function niryoTrajectory = calculateNiryoTrajectory()
-    
+function [niryoTrajectoryQmatrix] = calculateNiryoTrajectory(myNiryoOne, totalSteps)
 end
