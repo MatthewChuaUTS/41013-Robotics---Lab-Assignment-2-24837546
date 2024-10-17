@@ -7,9 +7,9 @@ env = environment();
 niryoOneCurrentJointPosition = [deg2rad(-125), deg2rad(12.9), deg2rad(-37.5), 0, 0, 0];  
 myNiryoOne = niryoOne(transl(0.54, -0.01, 0));  
 myNiryoOne.model.animate(niryoOneCurrentJointPosition);  
-% myNiryoOne.model.teach(niryoOneCurrentJointPosition);
+% myNiryoOne.model.teach(niryoOneCurrentJointPosition);c
 
-% Set up Robot 2
+% Set up Roboclet 2
 
 % NOTE, SET UR3 QLIM JOINT 2 TO 30 AND 150 DEG, WHATEVER THAT IS IN RAD
 UR3CurrentJointPosition = [deg2rad(-45.7), deg2rad(-82.9), deg2rad(94.3), deg2rad(-186), deg2rad(-134), deg2rad(0)];  
