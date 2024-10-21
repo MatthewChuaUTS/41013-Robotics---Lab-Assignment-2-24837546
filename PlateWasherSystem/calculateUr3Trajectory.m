@@ -1,77 +1,52 @@
-% function [ur3TrajectoryQmatrix] = calculateUr3Trajectory(myUR3, totalSteps)
-% end
+% % function [ur3TrajectoryQmatrix] = calculateUr3Trajectory(myUR3, totalSteps)
+% % end
 
 clf;
-clear all;
+clear all; %#ok<CLALL>
 
+% Initialize the environment and UR3 robot model
 env = environment();  %%
 myUR3 = UR3(transl(1.02, -0.01, 0));
 
-UR3InitialJointPosition = [0, -pi/2, 0, 0, -pi/2, 0];                                                
-myUR3.model.animate(UR3InitialJointPosition); 
+% Define the initial joint configuration
+UR3InitialJointPosition = [0, -pi/2, 0, 0, -pi/2, 0];
+myUR3.model.animate(UR3InitialJointPosition);  % Move to initial position
 
-qWaypoints = [UR3InitialJointPosition ...
-    ; deg2rad([0, -57.1, 131, -163, -90, 0]) ...
-    ; deg2rad([-25.7, -88.6, 88.6, -171, -151, 0]) ...
-    ; deg2rad([-25.7, -88.6, 88.6, -171, -151, 0]) ...
-    ; deg2rad([-25.7, -88.6, 88.6, -171, -151, 0]) ...
-    ; deg2rad([-25.7, -88.6, 88.6, -171, -151, 0]) ...
-    ; deg2rad([0, -57.1, 131, -163, -90, 0]) ...
-    ; deg2rad([-68.6, -82.9, 22.9, -42.9, -68.6, 0]) ...
-    ; deg2rad([-68.6, -82.9, 22.9, -42.9, -68.6, 0]) ...
-    ; deg2rad([-68.6, -82.9, 22.9, -42.9, -68.6, 0]) ...
-    ; deg2rad([-68.6, -82.9, 22.9, -42.9, -68.6, 0]) ...
-    ; deg2rad([-134, -74.3, 111, -12.9, -90, -32.1]) ...
-    ; UR3InitialJointPosition];
+% Define waypoints for the UR3 robot
+qWaypoints = [UR3InitialJointPosition;
+    deg2rad([0, -57.1, 131, -163, -90, 0]);
+    deg2rad([-25.7, -88.6, 88.6, -171, -151, 0]);
+    deg2rad([-25.7, -88.6, 88.6, -171, -151, 0]);
+    deg2rad([-25.7, -88.6, 88.6, -171, -151, 0]);
+    deg2rad([-25.7, -88.6, 88.6, -171, -151, 0]);
+    deg2rad([0, -57.1, 131, -163, -90, 0]);
+    deg2rad([-68.6, -82.9, 22.9, -42.9, -68.6, 0]);
+    deg2rad([-68.6, -82.9, 22.9, -42.9, -68.6, 0]);
+    deg2rad([-68.6, -82.9, 22.9, -42.9, -68.6, 0]);
+    deg2rad([-68.6, -82.9, 22.9, -42.9, -68.6, 0]);
+    deg2rad([-134, -74.3, 111, -12.9, -90, -32.1])];
 
-% qMatrix = InterpolateWaypointRadians(qWaypoints,deg2rad(5));
-% robot.animate(qMatrix);
+% Preallocate qmatrix for 550 rows (11 segments x 50 steps) and 6 columns
+steps = 50;
+qmatrix = zeros((length(qWaypoints) - 1) * steps, 6);
 
+% Generate the trajectory and store it in the preallocated matrix
+rowIdx = 1;  % Row index for storing trajectories
 for i = 2:length(qWaypoints)
-    qmatrix = jtraj(qWaypoints(i-1),qWaypoints(i),50);
-    myUR3.model.animate(qmatrix);
-end
-
-
-
-%% FineInterpolation
-% Use results from Q2.6 to keep calling jtraj until all step sizes are
-% smaller than a given max steps size
-function qMatrix = FineInterpolation(q1,q2,maxStepRadians)
-if nargin < 3
-    maxStepRadians = deg2rad(1);
-end
+    % Generate trajectory for the current segment
+    traj = jtraj(qWaypoints(i - 1, :), qWaypoints(i, :), steps);
     
-steps = 2;
-while ~isempty(find(maxStepRadians < abs(diff(jtraj(q1,q2,steps))),1))
-    steps = steps + 1;
-end
-qMatrix = jtraj(q1,q2,steps);
-end
-
-%% InterpolateWaypointRadians
-% Given a set of waypoints, finely intepolate them
-function qMatrix = InterpolateWaypointRadians(waypointRadians,maxStepRadians)
-if nargin < 2
-    maxStepRadians = deg2rad(1);
+    % Store the trajectory in the preallocated qmatrix
+    qmatrix(rowIdx:rowIdx + steps - 1, :) = traj;
+    
+    % Update the row index for the next segment
+    rowIdx = rowIdx + steps;
+    disp(rowIdx);
 end
 
-qMatrix = [];
-for i = 1: size(waypointRadians,1)-1
-    qMatrix = [qMatrix ; FineInterpolation(waypointRadians(i,:),waypointRadians(i+1,:),maxStepRadians)]; %#ok<AGROW>
+% Animate the UR3 robot along the generated trajectory
+for j = 1:size(qmatrix, 1)
+    myUR3.model.animate(qmatrix(j, :));
+    drawnow();  % Ensure real-time rendering
+    pause(0.01);  % Add a small pause for smooth animation
 end
-end
-
-
-
-
-
-
-%% bury
-% myUR3.model.teach(UR3CurrentJointPosition
-
-% T1 = [eye(3) [0.65 0.071 0.474]'; zeros(1,3) 1];  
-% % targettr = endEffectorTr * transl([0.757,0.071,0.474]);
-% NcircularMotion = myNiryoOne.model.ikcon(T1, niryoOneCurrentJointPosition);
-% myNiryoOne.model.animate(NcircularMotion);  
-% myNiryoOne.model.teach(NcircularMotion);
