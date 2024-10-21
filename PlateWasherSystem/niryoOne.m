@@ -41,7 +41,7 @@ classdef niryoOne < RobotBaseClass
             link(3) = Link('d',0,'a',-0.03,'alpha',pi/2,'qlim', deg2rad([-80 90]), 'offset', 0);
             link(4) = Link('d',0.2215,'a',0,'alpha',pi/2,'qlim',deg2rad([-175 175]),'offset', 0);
             link(5) = Link('d',0,'a',0,'alpha',-pi/2,'qlim',deg2rad([-100 110]), 'offset',pi); % ignore offset for now
-            link(6) = Link('d',-0.00178,'a',0,'alpha',0,'qlim',deg2rad([-147.5 147.5]),'offset', 0);
+            link(6) = Link('d',0.00178,'a',0,'alpha',-pi,'qlim',deg2rad([-147.5 147.5]),'offset', 0);
 
             self.model = SerialLink(link,'name',self.name);
         end      
