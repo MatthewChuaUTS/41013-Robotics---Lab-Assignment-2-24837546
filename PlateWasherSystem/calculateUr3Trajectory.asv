@@ -25,11 +25,11 @@ qWaypoints = [UR3InitialJointPosition ...
     ; UR3InitialJointPosition];
 
 % qMatrix = InterpolateWaypointRadians(qWaypoints,deg2rad(5));
+% qmatrix = jtraj(qWaypoints,50);
 % robot.animate(qMatrix);
 
 for i = 2:length(qWaypoints)
-    qmatrix = jtraj(qWaypoints(i-1),qWaypoints(i),50);
-    myUR3.model.animate(qmatrix);
+    myUR3.model.animate(qWaypoints{i-1},qWaypoints{i},'fps',50);   
 end
 
 
