@@ -22,7 +22,7 @@ classdef niryoOne < RobotBaseClass
             end
 
             self.CreateModel();
-			self.model.base = self.model.base.T; % rotx &y makes it stand up * baseTr
+			self.model.base = baseTr; % rotx &y makes it stand up * baseTr
             self.model.tool = self.toolTr;
             self.PlotAndColourRobot();
             % self.model.teach([0 0 0 0 0 0]); % I commented this out
