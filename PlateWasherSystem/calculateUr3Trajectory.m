@@ -32,10 +32,23 @@ qmatrix = zeros((length(qWaypoints) - 1) * steps, 6);
 
 % Generate the trajectory and store it in the preallocated matrix
 rowIdx = 1;  % Row index for storing trajectories
+amplitude = deg2rad(5);  % Amplitude of the circular motion (5 degrees)
+frequency = 2 * pi / steps;  % Frequency of the circular motion 
+
 for i = 2:length(qWaypoints)
     % Generate trajectory for the current segment
     traj = jtraj(qWaypoints(i - 1, :), qWaypoints(i, :), steps);
     
+    % Only apply circular motion between specific waypoints
+    if i >= 3 && i <= 5  % These are the waypoints where circular motion occurs
+        for j = 1:steps
+            % Apply circular motion to joints 3-5
+            traj(j, 3) = traj(j, 3) + amplitude * sin(frequency * j);  % Sine wave for joint 3
+            traj(j, 4) = traj(j, 4) + amplitude * cos(frequency * j);  % Cosine wave for joint 4
+            traj(j, 5) = traj(j, 5) + amplitude * sin(frequency * j);  % Sine wave for joint 5
+        end
+    end
+
     % Store the trajectory in the preallocated qmatrix
     qmatrix(rowIdx:rowIdx + steps - 1, :) = traj;
     

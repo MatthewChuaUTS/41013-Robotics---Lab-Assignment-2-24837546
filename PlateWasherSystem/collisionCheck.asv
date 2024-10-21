@@ -1,7 +1,8 @@
 axis equal;
 hold on;
 
-% niryoOneOne = niryoOne(transl(0.54, -0.01, 0));  
+niryoOneCurrentJointPosition = [0, 0, 0, 0, 0, 0];  
+myNiryoOne = niryoOne(transl(0.54, -0.01, 0));  
 
 % NOTE, SET UR3 QLIM JOINT 2 TO 30 AND 150 DEG, WHATEVER THAT IS IN RAD
 UR3CurrentJointPosition = [0, -pi/2, 0, 0, -pi/2, 0];  
