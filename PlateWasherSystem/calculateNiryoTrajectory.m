@@ -27,23 +27,28 @@ trSteps = {transl([0.22,0.061,0.195]) ...
 
 % Preallocate qmatrix for 550 rows (11 segments x 50 steps) and 6 columns
 % (more rows for this one, will eventually made it equal to ur3)
-% q2 = UR3.model.ikcon(b1_upos, q1);
-% Generate the trajectory and store it in the preallocated matrix
 steps = 50;
-qmatrix = zeros((length(trSteps) - 1) * steps, 6);
+qmatrix = zeros((length(trSteps) - 1) * steps, 6); % array for traj
+qWaypoints = zeros((length(trSteps)) * steps, 6); % array for ikcon
+
+% Generate the joint angle using ikcon
+for i = 1:length(trSteps)
+    % Generate trajectory for the current segment
+    qWaypoints(i, :) = myNiryoOne.model.ikcon(trSteps{i}, niryoOneCurrentJointPosition);
+   
+    % Update the CurrentJointPosition for the next segment before exit the loop
+    niryoOneCurrentJointPosition = qWaypoints(i, :); 
+end
 
 % Generate the trajectory and store it in the preallocated matrix
 rowIdx = 1;  % Row index for storing trajectories
-for i = 2:length(trSteps)
+for i = 1:(length(trSteps) - 1)
     % Generate trajectory for the current segment
-    traj = myNiryoOne.model.ikcon(trSteps(i, :), niryoOneCurrentJointPosition);
-    
+    traj = jtraj(qWaypoints(i, :), qWaypoints(i + 1, :), steps);
+
     % Store the trajectory in the preallocated qmatrix
     qmatrix(rowIdx:rowIdx + steps - 1, :) = traj; % qmatrix adds another 50 at the array every i
     
-    % Update the row index for the next segment before exit the loop
-    niryoOneCurrentJointPosition = niryoOneCurrentJointPosition; 
-
     % Update the row index for the next segment
     rowIdx = rowIdx + steps;
     disp(rowIdx);
