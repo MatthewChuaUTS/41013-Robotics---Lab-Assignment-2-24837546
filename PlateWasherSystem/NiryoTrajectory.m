@@ -30,7 +30,7 @@ function [niryoTrajectoryQmatrix] = calculateNiryoTrajectory(myNiryoOne, steps)
         traj = jtraj(qWaypoints(i, :), qWaypoints(i + 1, :), steps);
         if i >= 9 && i <= 10 
             for j = 1:steps
-                traj(j, 6) = traj(j, 6) + deg2rad(360 * j / steps);  
+                traj(j, 6) = traj(j, 6) + deg2rad(360 * j / steps) * roty(pi/2);  
             end
         end
         qmatrix(rowIdx:rowIdx + steps - 1, :) = traj;

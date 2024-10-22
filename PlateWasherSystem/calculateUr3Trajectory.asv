@@ -1,127 +1,49 @@
-% function [ur3TrajectoryQmatrix] = calculateUr3Trajectory(myUR3, totalSteps)
-% end
+function [ur3TrajectoryQmatrix] = calculateUr3Trajectory(myUR3, steps)
+    qWaypoints = [UR3InitialJointPosition;
+        deg2rad([0, -57.1, 131, -163, -90, 0]);
+        deg2rad([-25.7, -88.6, 88.6, -171, -151, 0]);
+        deg2rad([-25.7, -88.6, 88.6, -171, -151, 0]);
+        deg2rad([-25.7, -88.6, 88.6, -171, -151, 0]);
+        deg2rad([-25.7, -88.6, 88.6, -171, -151, 0]);
+        deg2rad([0, -57.1, 131, -163, -90, 0]);
+        deg2rad([-68.6, -82.9, 22.9, -42.9, -68.6, 0]);
+        deg2rad([-68.6, -82.9, 22.9, -42.9, -68.6, 0]);
+        deg2rad([-68.6, -82.9, 22.9, -42.9, -68.6, 0]);
+        deg2rad([-68.6, -82.9, 22.9, -42.9, -68.6, 0]);
+        deg2rad([-134, -78.3, 102, 250, -93.9, 110])];
+    
+    steps = 50;
+    qmatrix = zeros((length(qWaypoints) - 1) * steps, 6);
+    
+    rowIdx = 1;  
+    for i = 2:length(qWaypoints)
+        traj = jtraj(qWaypoints(i - 1, :), qWaypoints(i, :), steps);
+        if i >= 2 && i <= 5  
+            for j = 1:steps
+                traj(j, 6) = traj(j, 6) + deg2rad(360 * j / steps);  
+            end
+        end
+       
+        qmatrix(rowIdx:rowIdx + steps - 1, :) = traj;    
+        rowIdx = rowIdx + steps;
+        disp(rowIdx);
+    end
+
+    ur3TrajectoryQmatrix = qmatrix;
+    
+    for j = 1:size(qmatrix, 1)
+        myUR3.model.animate(qmatrix(j, :));
+        drawnow(); 
+        pause(0.01);  
+    end
+
+end
 
 clf;
-clear all;
+clear all; %#ok<CLALL>
 
 env = environment();  %%
 myUR3 = UR3(transl(1.02, -0.01, 0));
 
-UR3InitialJointPosition = [0, -pi/2, 0, 0, -pi/2, 0];                                                
+UR3InitialJointPosition = [0, -pi/2, 0, 0, -pi/2, 0];
 myUR3.model.animate(UR3InitialJointPosition); 
-
-qWaypoints = [UR3InitialJointPosition ...
-    ; deg2rad([0, -57.1, 131, -163, -90, 0]) ...
-    ; deg2rad([-25.7, -88.6, 88.6, -171, -151, 0]) ...
-    ; deg2rad([-25.7, -88.6, 88.6, -171, -151, 0]) ...
-    ; deg2rad([-25.7, -88.6, 88.6, -171, -151, 0]) ...
-    ; deg2rad([-25.7, -88.6, 88.6, -171, -151, 0]) ...
-    ; deg2rad([0, -57.1, 131, -163, -90, 0]) ...
-    ; deg2rad([-68.6, -82.9, 22.9, -42.9, -68.6, 0]) ...
-    ; deg2rad([-68.6, -82.9, 22.9, -42.9, -68.6, 0]) ...
-    ; deg2rad([-68.6, -82.9, 22.9, -42.9, -68.6, 0]) ...
-    ; deg2rad([-68.6, -82.9, 22.9, -42.9, -68.6, 0]) ...
-    ; deg2rad([-134, -74.3, 111, -12.9, -90, -32.1])];
-
-% qMatrix = InterpolateWaypointRadians(qWaypoints,deg2rad(5));
-% robot.animate(qMatrix);
-
-% for i = 2:length(qWaypoints)
-%     qmatrix = jtraj(qWaypoints(i-1,:),qWaypoints(i,:),50);
-%     for j = 1:size(qmatrix, 1)
-%         myUR3.model.animate(qmatrix(j, :));
-%         drawnow();
-%         pause(0.1); % Add a small pause to visualize the movement
-%     end
-%     steps = 50;
-% end
-
-qmatrix = [];
-for i = 2:length(qWaypoints)
-    qmatrix = jtraj(qWaypoints(i-1,:),qWaypoints(i,:),50);
-end
-
-for j = 1:size(qmatrix, 1)
-    myUR3.model.animate(qmatrix(j, :));
-    drawnow();
-    pause(0.1); % Add a small pause to visualize the movement
-end
-
-myUR3.model.animate(qmatrix(j, :));
-
-%% FineInterpolation
-% Use results from Q2.6 to keep calling jtraj until all step sizes are
-% smaller than a given max steps size
-function qMatrix = FineInterpolation(q1,q2,maxStepRadians)
-if nargin < 3
-    maxStepRadians = deg2rad(1);
-end
-    
-steps = 2;
-while ~isempty(find(maxStepRadians < abs(diff(jtraj(q1,q2,steps))),1))
-    steps = steps + 1;
-end
-qMatrix = jtraj(q1,q2,steps);
-end
-
-%% InterpolateWaypointRadians
-% Given a set of waypoints, finely intepolate them
-function qMatrix = InterpolateWaypointRadians(waypointRadians,maxStepRadians)
-if nargin < 2
-    maxStepRadians = deg2rad(1);
-end
-
-qMatrix = [];
-for i = 1: size(waypointRadians,1)-1
-    qMatrix = [qMatrix ; FineInterpolation(waypointRadians(i,:),waypointRadians(i+1,:),maxStepRadians)]; %#ok<AGROW>
-end
-end
-
-
-
-
-
-
-%% bury
-% myUR3.model.teach(UR3CurrentJointPosition
-
-% T1 = [eye(3) [0.65 0.071 0.474]'; zeros(1,3) 1];  
-% % targettr = endEffectorTr * transl([0.757,0.071,0.474]);
-% NcircularMotion = myNiryoOne.model.ikcon(T1, niryoOneCurrentJointPosition);
-% myNiryoOne.model.animate(NcircularMotion);  
-% myNiryoOne.model.teach(NcircularMotion);
-
-
-% robot.animate(q1);
-% qWaypoints = [q1;q2];                                                       % from q1 to q2                                                 % distance robot moved without collision 1 = q1
-% qMatrix = [];
-% startWaypoint = checkedTillWaypoint;
-% for i = startWaypoint:size(qWaypoints,1)-1                              % from startwaypoint to last one
-%     qMatrixJoin = InterpolateWaypointRadians(qWaypoints(i:i+1,:),deg2rad(10));
-%     if ~IsCollision(robot,qMatrixJoin,faces,vertex,faceNormals)
-%         qMatrix = [qMatrix; qMatrixJoin]; %#ok<AGROW>
-%         robot.animate(qMatrixJoin);
-%         size(qMatrix)
-%         isCollision = false;
-%         checkedTillWaypoint = i+1;
-%         % Now try and join to the final goal (q2)
-%         qMatrixJoin = InterpolateWaypointRadians([qMatrix(end,:); q2],deg2rad(10));
-%         if ~IsCollision(robot,qMatrixJoin,faces,vertex,faceNormals)
-%             qMatrix = [qMatrix;qMatrixJoin];
-%             % Reached goal without collision, so break out
-%             break;
-%         end
-%     else
-%         % Randomly pick a pose that is not in collision
-%         qRand = (2 * rand(1,3) - 1) * pi;
-%         while IsCollision(robot,qRand,faces,vertex,faceNormals)
-%             qRand = (2 * rand(1,3) - 1) * pi;
-%         end
-%         qWaypoints =[ qWaypoints(1:i,:); qRand; qWaypoints(i+1:end,:)];
-%         isCollision = true;
-%         break;
-%     end
-% end
-% 
-% robot.animate(qMatrix)
-
