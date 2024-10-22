@@ -80,6 +80,13 @@ classdef environment < handle
                  [FLOOR_HEIGHT, self.WALL_HEIGHT; FLOOR_HEIGHT, self.WALL_HEIGHT], ...
                  'CData', imread('wall.png'), ...
                  'FaceColor', 'texturemap');  
+
+            % Place Fence
+            PlaceObject('fenceFinal.ply',[-0.05, -0.65, -0.7971]);
+            PlaceObject('fenceFinal.ply',[-0.05, -0.35, -0.7971]);
+            % verts = [get(h_1,'Vertices'), ones(size(get(h_1,'Vertices'),1),1)] * trotz(pi/2);
+            % verts(:,1) = verts(:,1) * 20;
+            % set(h_1,'Vertices',verts(:,1:3))
         end
         
         function placeStaticEnvironmentObjects(self)
