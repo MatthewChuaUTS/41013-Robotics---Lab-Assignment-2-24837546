@@ -72,12 +72,12 @@ function [niryoTrajectoryQmatrix] = calculateNiryoTrajectory(myNiryoOne, steps)
     niryoTrajectoryQmatrix = qmatrix;
 
     % Animate the NiryoOne robot along the generated trajectory
-    myNiryoOne.model.delay = 0;
-    for j = 1:size(qmatrix, 1)
-        myNiryoOne.model.animate(qmatrix(j, :));
-        drawnow();  
-        % pause(0.01); 
-    end
+    % myNiryoOne.model.delay = 0;
+    % for j = 1:size(qmatrix, 1)
+    %     myNiryoOne.model.animate(qmatrix(j, :));
+    %     drawnow();  
+    %     % pause(0.01); 
+    % end
 end
 
 % Probably also insert velocity acceleration from Lab4Q2-3 to check if RMRC
@@ -93,6 +93,18 @@ end
 
 % Call function to test it's running
 % environment();
-% myNiryoOne = niryoOne(transl(0.54, -0.01, 0)); 
 % steps = 50;  
-% calculateNiryoTrajectory(myNiryoOne, steps); 
+% niryoTrajectoryQmatrix = calculateNiryoTrajectory(myNiryoOne, steps); 
+% Ur3TrajectoryQmatrix = calculateUr3Trajectory(myUR3, steps); 
+% 
+% myNiryoOne.model.delay = 0;
+% myUR3.model.delay = 0;
+% for j = 1:size(qmatrix, 1)
+%     myNiryoOne.model.animate(niryoTrajectoryQmatrix(j, :));
+%     myUR3.model.animate(Ur3TrajectoryQmatrix(j, :));
+%     drawnow(); 
+%     pause(0.01);  
+% end
+
+
+% myNiryoOne = niryoOne(transl(0.54, -0.01, 0)); 

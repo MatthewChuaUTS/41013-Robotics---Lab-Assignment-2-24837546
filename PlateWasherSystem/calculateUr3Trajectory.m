@@ -64,12 +64,12 @@ function [ur3TrajectoryQmatrix] = calculateUr3Trajectory(myUR3, steps)
 
     ur3TrajectoryQmatrix = qmatrix;
 
-    myUR3.model.delay = 0;
-    for j = 1:size(qmatrix, 1)
-        myUR3.model.animate(qmatrix(j, :));
-        drawnow(); 
-        pause(0.01);  
-    end
+    % myUR3.model.delay = 0;
+    % for j = 1:size(qmatrix, 1)
+    %     myUR3.model.animate(qmatrix(j, :));
+    %     drawnow(); 
+    %     pause(0.01);  
+    % end
 
 end
 

@@ -38,7 +38,7 @@ function [niryoTrajectoryQmatrix] = calculateNiryoTrajectory(myNiryoOne, steps)
     rowIdx = 1;  
     for i = 1:(length(trSteps) - 1) 
         traj = jtraj(qWaypoints(i, :), qWaypoints(i + 1, :), steps);
-        if i >= 2 && i <= 3
+        if i >= 2 && i <= 5
             x = zeros(2,steps);
             s = lspb(0,1,steps);                                 % Create interpolation scalar
 
@@ -72,12 +72,12 @@ function [niryoTrajectoryQmatrix] = calculateNiryoTrajectory(myNiryoOne, steps)
     niryoTrajectoryQmatrix = qmatrix;
 
     % Animate the NiryoOne robot along the generated trajectory
-    myNiryoOne.model.delay = 0;
-    for j = 1:size(qmatrix, 1)
-        myNiryoOne.model.animate(qmatrix(j, :));
-        drawnow();  
-        % pause(0.01); 
-    end
+    % myNiryoOne.model.delay = 0;
+    % for j = 1:size(qmatrix, 1)
+    %     myNiryoOne.model.animate(qmatrix(j, :));
+    %     drawnow();  
+    %     % pause(0.01); 
+    % end
 end
 
 % Probably also insert velocity acceleration from Lab4Q2-3 to check if RMRC
@@ -92,7 +92,19 @@ end
     % end
 
 % Call function to test it's running
-environm
-% myNiryoOne = niryoOne(transl(0.54, -0.01, 0)); 
+% environment();
 % steps = 50;  
 % calculateNiryoTrajectory(myNiryoOne, steps); 
+% calculateUr3Trajectory(myUR3, steps); 
+
+myNiryoOne.model.delay = 0;
+myUR3.model.delay = 0;
+for j = 1:size(qmatrix, 1)
+    myNiryoOne.model.animate(qmatrix(j, :));
+    myUR3.model.animate(qmatrix(j, :));
+    drawnow(); 
+    pause(0.01);  
+end
+
+
+% myNiryoOne = niryoOne(transl(0.54, -0.01, 0)); 
