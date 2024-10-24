@@ -7,13 +7,14 @@ function [niryoTrajectoryQmatrix] = calculateNiryoTrajectory(myNiryoOne, steps)
         , transl([0.358,0.196,0.005]) ... % dunk
         , transl([0.358,0.196,0.406]) ... % point4  RMRC in lab happens for same axis, goes straight, is it kay if the points are short?
         , transl([0.678,0.196,0.406]) ... % hold
-        , transl([0.678,0.187,0.406]) ...
-        , transl([0.678,0.187,0.406]) ...
-        , transl([0.747,-0.049,0.072]) ... 
-        , transl([0.655,0.074,0.457]) ...
-        , transl([0.655,0.074,0.457]) ...
-        , transl([0.747,-0.049,0.072]) ...
-        , transl([0.22,0.061,0.195]) ...
+        , transl([0.678,0.196,0.406]) ... % hold
+        , transl([0.678,0.196,0.406]) ... % hold
+        , transl([0.678,0.196,0.406]) ... % hold
+        , transl([0.678,0.196,0.406]) ... % hold
+        , transl([0.747,-0.049,0.072]) ... % sponge
+        , transl([0.655,0.074,0.457]) ... % scrub
+        , transl([0.655,0.074,0.457]) ... % srub
+        , transl([0.747,-0.049,0.072]) ... % sponge
         , transl([0.22,0.061,0.195])};
 
     % Preallocate qmatrix for 600 rows (12 segments x 50 steps) and 6 columns
@@ -33,7 +34,7 @@ function [niryoTrajectoryQmatrix] = calculateNiryoTrajectory(myNiryoOne, steps)
     rowIdx = 1;  
     for i = 1:(length(trSteps) - 1) 
         traj = jtraj(qWaypoints(i, :), qWaypoints(i + 1, :), steps);
-        if i >= 2 && i <= 5
+        if i >= 1 && i <= 8 
             x = zeros(2,steps);
             s = lspb(0,1,steps);                                 % Create interpolation scalar
 
