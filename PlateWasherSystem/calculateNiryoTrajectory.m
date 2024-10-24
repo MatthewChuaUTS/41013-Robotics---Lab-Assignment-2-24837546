@@ -2,15 +2,11 @@ function [niryoTrajectoryQmatrix] = calculateNiryoTrajectory(myNiryoOne, steps)
     if nargin < 2
         steps = 50;
     end
-
-    % environment();  %%
-    % myNiryoOne = niryoOne();
-
-    trSteps = {transl([0.22,0.061,0.195]) ...
-        , transl([0.358,0.196,0.244]) ...
-        , transl([0.358,0.196,0.005]) ...
-        , transl([0.358,0.196,0.406]) ... %RMRC in lab happens for same axis, goes straight, is it kay if the points are short?
-        , transl([0.678,0.196,0.406]) ...
+    trSteps = {transl([0.22,0.061,0.195]) ... % plate
+        , transl([0.358,0.196,0.244]) ... % point2
+        , transl([0.358,0.196,0.005]) ... % dunk
+        , transl([0.358,0.196,0.406]) ... % point4  RMRC in lab happens for same axis, goes straight, is it kay if the points are short?
+        , transl([0.678,0.196,0.406]) ... % hold
         , transl([0.678,0.187,0.406]) ...
         , transl([0.678,0.187,0.406]) ...
         , transl([0.747,-0.049,0.072]) ... 
@@ -25,10 +21,7 @@ function [niryoTrajectoryQmatrix] = calculateNiryoTrajectory(myNiryoOne, steps)
     qmatrix = zeros((length(trSteps) - 1) * steps, 6);
     qWaypoints = zeros((length(trSteps)) * steps, 6); 
     deltaT = 0.05; 
-    
-    myNiryoOne();
-    niryoOneCurrentJointPosition = [0,0,0,0,0,0];
-    myNiryoOne.model.plot(niryoOneCurrentJointPosition);
+    niryoOneCurrentJointPosition = [0, 0, 0, 0, 0, 0];
 
     % Generate the joint angle using ikcon
     for i = 1:length(trSteps)
