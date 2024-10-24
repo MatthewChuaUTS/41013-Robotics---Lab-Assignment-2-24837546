@@ -17,14 +17,16 @@ function [niryoTrajectoryQmatrix] = calculateNiryoTrajectory(myNiryoOne, steps)
         , transl([0.655,0.074,0.457]) ...
         , transl([0.655,0.074,0.457]) ...
         , transl([0.747,-0.049,0.072]) ...
+        , transl([0.22,0.061,0.195]) ...
         , transl([0.22,0.061,0.195])};
 
-    % Preallocate qmatrix for 550 rows (11 segments x 50 steps) and 6 columns
+    % Preallocate qmatrix for 600 rows (12 segments x 50 steps) and 6 columns
     % (more rows for this one, will eventually made it equal to ur3)
     qmatrix = zeros((length(trSteps) - 1) * steps, 6);
     qWaypoints = zeros((length(trSteps)) * steps, 6); 
     deltaT = 0.05; 
     
+    myNiryoOne();
     niryoOneCurrentJointPosition = [0,0,0,0,0,0];
     myNiryoOne.model.plot(niryoOneCurrentJointPosition);
 

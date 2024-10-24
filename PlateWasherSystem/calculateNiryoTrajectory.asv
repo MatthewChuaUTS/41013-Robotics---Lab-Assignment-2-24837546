@@ -94,17 +94,17 @@ end
 % Call function to test it's running
 % environment();
 % steps = 50;  
-% calculateNiryoTrajectory(myNiryoOne, steps); 
-% calculateUr3Trajectory(myUR3, steps); 
-
-myNiryoOne.model.delay = 0;
-myUR3.model.delay = 0;
-for j = 1:size(qmatrix, 1)
-    myNiryoOne.model.animate(qmatrix(j, :));
-    myUR3.model.animate(qmatrix(j, :));
-    drawnow(); 
-    pause(0.01);  
-end
+% niryoTrajectoryQmatrix = calculateNiryoTrajectory(myNiryoOne, steps); 
+% Ur3TrajectoryQmatrix = calculateUr3Trajectory(myUR3, steps); 
+% 
+% myNiryoOne.model.delay = 0;
+% myUR3.model.delay = 0;
+% for j = 1:size(qmatrix, 1)
+%     myNiryoOne.model.animate(niryoTrajectoryQmatrix(j, :));
+%     myUR3.model.animate(Ur3TrajectoryQmatrix(j, :));
+%     drawnow(); 
+%     pause(0.01);  
+% end
 
 
 % myNiryoOne = niryoOne(transl(0.54, -0.01, 0)); 
