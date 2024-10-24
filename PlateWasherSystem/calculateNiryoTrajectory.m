@@ -1,9 +1,10 @@
-% function [niryoTrajectoryQmatrix] = calculateNiryoTrajectory(myNiryoOne, steps)
+function [niryoTrajectoryQmatrix] = calculateNiryoTrajectory(myNiryoOne, steps)
+    if nargin < 2
+        steps = 50;
+    end
 
-env = environment();  %%
-myNiryoOne = niryoOne(transl(0.54, -0.01, 0));
-niryoOneCurrentJointPosition = [0, 0, 0, 0, 0, 0];  
-myNiryoOne.model.animate(niryoOneCurrentJointPosition); 
+    % environment();  %%
+    % myNiryoOne = niryoOne();
 
     trSteps = {transl([0.22,0.061,0.195]) ...
         , transl([0.358,0.196,0.244]) ...
@@ -20,11 +21,13 @@ myNiryoOne.model.animate(niryoOneCurrentJointPosition);
 
     % Preallocate qmatrix for 550 rows (11 segments x 50 steps) and 6 columns
     % (more rows for this one, will eventually made it equal to ur3)
-    steps = 50;
     qmatrix = zeros((length(trSteps) - 1) * steps, 6);
     qWaypoints = zeros((length(trSteps)) * steps, 6); 
     deltaT = 0.05; 
     
+    niryoOneCurrentJointPosition = [0,0,0,0,0,0];
+    myNiryoOne.model.plot(niryoOneCurrentJointPosition);
+
     % Generate the joint angle using ikcon
     for i = 1:length(trSteps)
         qWaypoints(i, :) = myNiryoOne.model.ikcon(trSteps{i}, niryoOneCurrentJointPosition);
@@ -35,25 +38,25 @@ myNiryoOne.model.animate(niryoOneCurrentJointPosition);
     rowIdx = 1;  
     for i = 1:(length(trSteps) - 1) 
         traj = jtraj(qWaypoints(i, :), qWaypoints(i + 1, :), steps);
-        % if i >= 2 && i <= 5
-        %     x = zeros(2,steps);
-        %     s = lspb(0,1,steps);                                 % Create interpolation scalar
-        % 
-        %     % calculate cells for x
-        %     for k = 1:steps-1
-        %         x(:,k) = trSteps{i}(1:2,4) * (1-s(k)) + trSteps{i+1}(1:2,4) * s(k);                  % Create trajectory in x-y plane
-        %     end
-        %     x(:,steps) = trSteps{i+1}(1:2,4);
-        % 
-        %     % RMRC trajectory
-        %     for j = 1:steps-1
-        %         xdot = (x(:,j+1) - x(:,j))/deltaT;                             % Calculate velocity at discrete time step
-        %         J = myNiryoOne.model.jacob0(qmatrix(rowIdx + j - 1, :));            % Get the Jacobian at the current state
-        %         J = J(1:2,:);                           % Take only first 2 rows
-        %         qdot = pinv(J)*xdot;                             % Solve velocitities via RMRC
-        %         qmatrix(rowIdx + j,:) =  qmatrix(rowIdx + j - 1,:) + deltaT * qdot';                   % Update next joint state
-        %     end
-        % end
+        if i >= 2 && i <= 5
+            x = zeros(2,steps);
+            s = lspb(0,1,steps);                                 % Create interpolation scalar
+
+            % calculate cells for x
+            for k = 1:steps-1
+                x(:,k) = trSteps{i}(1:2,4) * (1-s(k)) + trSteps{i+1}(1:2,4) * s(k);                  % Create trajectory in x-y plane
+            end
+            x(:,steps) = trSteps{i+1}(1:2,4);
+
+            % RMRC trajectory
+            for j = 1:steps-1
+                xdot = (x(:,j+1) - x(:,j))/deltaT;                             % Calculate velocity at discrete time step
+                J = myNiryoOne.model.jacob0(qmatrix(rowIdx + j - 1, :));            % Get the Jacobian at the current state
+                J = J(1:2,:);                           % Take only first 2 rows
+                qdot = pinv(J)*xdot;                             % Solve velocitities via RMRC
+                qmatrix(rowIdx + j,:) =  qmatrix(rowIdx + j - 1,:) + deltaT * qdot';                   % Update next joint state
+            end
+        end
         qmatrix(rowIdx:rowIdx + steps - 1, :) = traj;
 
         if i >= 9 && i <= 10 
@@ -69,20 +72,27 @@ myNiryoOne.model.animate(niryoOneCurrentJointPosition);
     niryoTrajectoryQmatrix = qmatrix;
 
     % Animate the NiryoOne robot along the generated trajectory
+    myNiryoOne.model.delay = 0;
     for j = 1:size(qmatrix, 1)
         myNiryoOne.model.animate(qmatrix(j, :));
         drawnow();  
-        pause(0.01); 
+        % pause(0.01); 
     end
-    
-    figure(1)
-    for i = 1:6
-        subplot(3,2,i)
-        plot(qmatrix(:,i),'k','LineWidth',1)
-        title(['Joint ', num2str(i)])
-        xlabel('Step')
-        ylabel('Joint Angle (rad)')
-    end
-% end
+end
 
+% Probably also insert velocity acceleration from Lab4Q2-3 to check if RMRC
+% graph working
+% figure(1)
+    % for i = 1:6
+    %     subplot(3,2,i)
+    %     plot(qmatrix(:,i),'k','LineWidth',1)
+    %     title(['Joint ', num2str(i)])
+    %     xlabel('Step')
+    %     ylabel('Joint Angle (rad)')
+    % end
 
+% Call function to test it's running
+% environment();
+% myNiryoOne = niryoOne(transl(0.54, -0.01, 0)); 
+% steps = 50;  
+% calculateNiryoTrajectory(myNiryoOne, steps); 
