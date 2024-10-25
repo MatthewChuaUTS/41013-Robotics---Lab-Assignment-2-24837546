@@ -4,7 +4,7 @@ function [niryoTrajectoryQmatrix] = calculateNiryoTrajectory(myNiryoOne, steps)
     end
     trSteps = {transl([0.22,0.061,0.195]) ... % plate 1
         , transl([0.358,0.196,0.244]) ... % point2 2
-        , transl([0.358,0.196,0.005]) ... % dunk 3
+        , transl([0.358,0.196,-0.005]) ... % dunk 3
         , transl([0.358,0.196,0.406]) ... % point4 4  RMRC in lab happens for same axis, goes straight, is it kay if the points are short?
         , transl([0.6975,0.263,0.3915]) ... % hold 5
         , transl([0.6975,0.263,0.3915]) ... % hold 6
@@ -12,13 +12,13 @@ function [niryoTrajectoryQmatrix] = calculateNiryoTrajectory(myNiryoOne, steps)
         , transl([0.6975,0.263,0.3915]) ... % hold 8
         , transl([0.6975,0.263,0.3915]) ... % hold 9
         , transl([0.747,-0.049,0.072]) ... % sponge 10
-        , transl([0.726,0.1495,0.4695]) ... % scrub position
-        , transl([0.726,0.1495,0.4695]) ... % scrub 11
-        , transl([0.726,0.1495,0.4695]) ... % srub 12 
+        , transl([0.726,0.1495,0.4695]) * trotx(pi/2) ... % scrub position
+        , transl([0.726,0.1495,0.4695]) * trotx(pi/2) ... % scrub 11
+        , transl([0.726,0.1495,0.4695]) * trotx(pi/2) ... % srub 12 
         , transl([0.726,0.1495,0.4695]) ... % scrub position
         , transl([0.726,0.1495,0.4695]) ... % scrub position
         , transl([0.747,-0.049,0.072]) ... % sponge 13
-        , transl([0.3203,-0.01,0.423])}; % reset 14
+        , transl([0.3203,-0.01,0.423]) * trotx(-pi/2)}; % reset 14
 
     % Preallocate qmatrix for 600 rows (12 segments x 50 steps) and 6 columns
     % (more rows for this one, will eventually made it equal to ur3)
@@ -26,7 +26,7 @@ function [niryoTrajectoryQmatrix] = calculateNiryoTrajectory(myNiryoOne, steps)
     qWaypoints = zeros((length(trSteps)) * steps, 6); 
     deltaT = 0.05; 
     niryoOneCurrentJointPosition = [0, 0, 0, 0, 0, 0];
-    % myNiryoOne.model.plot([niryoOneCurrentJointPosition]);
+    myNiryoOne.model.plot([niryoOneCurrentJointPosition]);
 
     % Generate the joint angle using ikcon
     for i = 1:length(trSteps)
@@ -72,12 +72,12 @@ function [niryoTrajectoryQmatrix] = calculateNiryoTrajectory(myNiryoOne, steps)
     niryoTrajectoryQmatrix = qmatrix;
 
     % Animate the NiryoOne robot along the generated trajectory
-    % myNiryoOne.model.delay = 0;
-    % for j = 1:size(qmatrix, 1)
-    %     myNiryoOne.model.animate(qmatrix(j, :));
-    %     drawnow();  
-    %     % pause(0.01); 
-    % end
+    myNiryoOne.model.delay = 0;
+    for j = 1:size(qmatrix, 1)
+        myNiryoOne.model.animate(qmatrix(j, :));
+        drawnow();  
+        % pause(0.01); 
+    end
 end
 
 % Probably also insert velocity acceleration from Lab4Q2-3 to check if RMRC
