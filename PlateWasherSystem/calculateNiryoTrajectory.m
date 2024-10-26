@@ -95,11 +95,50 @@ function [niryoTrajectoryQmatrix] = calculateNiryoTrajectory(myNiryoOne, steps, 
             disp('Collision detected at step: ');
             disp(j);
         end
+        
+        robot.animate(q1);
+        qWaypoints = [q1;q2];                                                       % from q1 to q2
+        isCollision = true;
+        checkedTillWaypoint = 1;                                                    % distance robot moved without collision 1 = q1
+        qMatrix = [];
+        while (CollisionIsDetected)
+        startWaypoint = checkedTillWaypoint;
+        for i = startWaypoint:size(qWaypoints,1)-1                              % from startwaypoint to last one
+            qMatrixJoin = InterpolateWaypointRadians(qWaypoints(i:i+1,:),deg2rad(10));
+            if ~IsCollision(robot,qMatrixJoin,faces,vertex,faceNormals)
+                qMatrix = [qMatrix; qMatrixJoin]; %#ok<AGROW>
+                robot.animate(qMatrixJoin);
+                size(qMatrix)
+                isCollision = false;
+                checkedTillWaypoint = i+1;
+                % Now try and join to the final goal (q2)
+                qMatrixJoin = InterpolateWaypointRadians([qMatrix(end,:); q2],deg2rad(10));
+                if ~IsCollision(robot,qMatrixJoin,faces,vertex,faceNormals)
+                    qMatrix = [qMatrix;qMatrixJoin];
+                    % Reached goal without collision, so break out
+                    break;
+                end
+            else
+                % Randomly pick a pose that is not in collision
+                qRand = (2 * rand(1,3) - 1) * pi;
+                while IsCollision(robot,qRand,faces,vertex,faceNormals)
+                    qRand = (2 * rand(1,3) - 1) * pi;
+                end
+                qWaypoints =[ qWaypoints(1:i,:); qRand; qWaypoints(i+1:end,:)];
+                isCollision = true;
+                break;
+            end
+        end
+    end
+
+
 
         myNiryoOne.model.animate(qmatrix(j, :));
         drawnow();  
-        % pause(0.01); 
+        pause(0.01); 
     end
+
+
 end
 
 

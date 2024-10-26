@@ -95,11 +95,50 @@ function [niryoTrajectoryQmatrix] = calculateNiryoTrajectory(myNiryoOne, steps, 
             disp('Collision detected at step: ');
             disp(j);
         end
+        
+        robot.animate(q1);
+        qWaypoints = [q1;q2];                                                       % from q1 to q2
+        isCollision = true;
+        checkedTillWaypoint = 1;                                                    % distance robot moved without collision 1 = q1
+        qMatrix = [];
+        while (CollisionIsDetected)
+        startWaypoint = checkedTillWaypoint;
+        for i = startWaypoint:size(qWaypoints,1)-1                              % from startwaypoint to last one
+            qMatrixJoin = InterpolateWaypointRadians(qWaypoints(i:i+1,:),deg2rad(10));
+            if ~IsCollision(robot,qMatrixJoin,faces,vertex,faceNormals)
+                qMatrix = [qMatrix; qMatrixJoin]; %#ok<AGROW>
+                robot.animate(qMatrixJoin);
+                size(qMatrix)
+                isCollision = false;
+                checkedTillWaypoint = i+1;
+                % Now try and join to the final goal (q2)
+                qMatrixJoin = InterpolateWaypointRadians([qMatrix(end,:); q2],deg2rad(10));
+                if ~IsCollision(robot,qMatrixJoin,faces,vertex,faceNormals)
+                    qMatrix = [qMatrix;qMatrixJoin];
+                    % Reached goal without collision, so break out
+                    break;
+                end
+            else
+                % Randomly pick a pose that is not in collision
+                qRand = (2 * rand(1,3) - 1) * pi;
+                while IsCollision(robot,qRand,faces,vertex,faceNormals)
+                    qRand = (2 * rand(1,3) - 1) * pi;
+                end
+                qWaypoints =[ qWaypoints(1:i,:); qRand; qWaypoints(i+1:end,:)];
+                isCollision = true;
+                break;
+            end
+        end
+    end
+
+
 
         myNiryoOne.model.animate(qmatrix(j, :));
         drawnow();  
-        % pause(0.01); 
+        pause(0.01); 
     end
+
+
 end
 
 
@@ -210,28 +249,20 @@ end
     % end
 
 % Call function to test it's running
-% % Create or load a Niryo One model object
-myNiryoOne = niryoOne(transl(0.54, -0.01, 0));  % Assuming niryoOne is your class or function
-
-% Define the number of steps
-steps = 50;
-
-% If you already have obstacle data (faces, vertex, faceNormals)
-% Example: Load a predefined object (like a cube) in the environment
-centerpnt = [0.5, 0.3, 0.1];  % Center of the cube
-sideLength = 0.3;  % Side length of the cube
-plotOptions.plotFaces = true;
-[vertex, faces, faceNormals] = RectangularPrism(centerpnt - sideLength/2, centerpnt + sideLength/2, plotOptions);
-axis equal;
-
-% Now call the function with all arguments
-niryoTrajectoryQmatrix = calculateNiryoTrajectory(myNiryoOne, steps, faces, vertex, faceNormals);
-
-% Animation of the trajectory
-myNiryoOne.model.delay = 0;
-for j = 1:size(niryoTrajectoryQmatrix, 1)
-    myNiryoOne.model.animate(niryoTrajectoryQmatrix(j, :));
-    drawnow(); 
-    pause(0.01);  
-end
+% myNiryoOne = niryoOne(transl(0.54, -0.01, 0));
+% steps = 50;
+% 
+% centerpnt = [0.5, 0.3, 0.3];  
+% sideLength = 0.3; 
+% plotOptions.plotFaces = true;
+% [vertex, faces, faceNormals] = RectangularPrism(centerpnt - sideLength/2, centerpnt + sideLength/2, plotOptions);
+% % axis ([0.5, 0.1, -0.7, 0.7, 0, 1]);
+% 
+% niryoTrajectoryQmatrix = calculateNiryoTrajectory(myNiryoOne, steps, faces, vertex, faceNormals);
+% myNiryoOne.model.delay = 0;
+% for j = 1:size(niryoTrajectoryQmatrix, 1)
+%     myNiryoOne.model.animate(niryoTrajectoryQmatrix(j, :));
+%     drawnow(); 
+%     pause(0.01);  
+% end
 
