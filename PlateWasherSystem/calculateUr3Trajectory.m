@@ -12,13 +12,14 @@ function [ur3TrajectoryQmatrix] = calculateUr3Trajectory(myUR3, steps)
         , transl([0.747,-0.049,0.072]) * troty(pi) ... % sponge 8
         , transl([0.8247, 0.2134, 0.5401]) * troty(pi) ...  % hold 9
         , transl([0.8247, 0.2134, 0.5401]) * troty(pi) ...  % hold 10
-        , transl([0.8247, 0.2134, 0.5401]) * troty(pi) ...  % hold
         , transl([0.8247, 0.2134, 0.5401]) * troty(pi) ...  % hold 11
-        , transl([0.8247, 0.2134, 0.5401]) * troty(pi) ...  % hold
-        , transl([0.6979, 0.2587, -0.04671]) * troty(pi) ...   % dunk 12
-        , transl([0.77, 0.381, -0.053]) * troty(pi) ...   % up 13
-        , transl([1.165, 0.3, 0.178]) * troty(pi) ... % place 14
-        , transl([0.9346, -0.1223, 0.5269]) * troty(pi)};  % reset 15
+        , transl([0.8247, 0.2134, 0.5401]) * troty(pi) ...  % hold 12
+        , transl([0.8247, 0.2134, 0.5401]) * troty(pi) ...  % hold 13
+        , transl([0.6979, 0.2587, -0.04671]) * troty(pi) ...   % dunk 14
+        , transl([0.6979, 0.2587, 0.5401]) * troty(pi) ...   % up 15
+        , transl([1.165, 0.3, 0.178]) * troty(pi) ... % place 16
+        , transl([0.9346, -0.1223, 0.5269]) * troty(pi) ...  % reset 17
+        , transl([0.9346, -0.1223, 0.5269]) * troty(pi)};  % reset 18
 
     qmatrix = zeros((length(trSteps) - 1) * steps, 6);
     qWaypoints = zeros((length(trSteps)) * steps, 6);  
@@ -35,25 +36,25 @@ function [ur3TrajectoryQmatrix] = calculateUr3Trajectory(myUR3, steps)
     rowIdx = 1;  
     for i = 1:(length(trSteps) - 1) 
         traj = jtraj(qWaypoints(i, :), qWaypoints(i + 1, :), steps);
-        % if i >= 7 && i <= 14
-        %     x = zeros(2,steps);
-        %     s = lspb(0,1,steps);                                 % Create interpolation scalar
-        % 
-        %     % calculate cells for x
-        %     for k = 1:steps-1
-        %         x(:,k) = trSteps{i}(1:2,4) * (1-s(k)) + trSteps{i+1}(1:2,4) * s(k);                  % Create trajectory in x-y plane
-        %     end
-        %     x(:,steps) = trSteps{i+1}(1:2,4);
-        % 
-        %     % RMRC trajectory
-        %     for j = 1:steps-1
-        %         xdot = (x(:,j+1) - x(:,j))/deltaT;                             % Calculate velocity at discrete time step
-        %         J = myUR3.model.jacob0(qmatrix(rowIdx + j - 1, :));            % Get the Jacobian at the current state
-        %         J = J(1:2,:);                           % Take only first 2 rows
-        %         qdot = pinv(J)*xdot;                             % Solve velocitities via RMRC
-        %         qmatrix(rowIdx + j,:) =  qmatrix(rowIdx + j - 1,:) + deltaT * qdot';                   % Update next joint state
-        %     end
-        % end
+        if (i >= 1 && i <= 4) || (i > 6)
+            x = zeros(2,steps);
+            s = lspb(0,1,steps);                                 % Create interpolation scalar
+
+            % calculate cells for x
+            for k = 1:steps-1
+                x(:,k) = trSteps{i}(1:2,4) * (1-s(k)) + trSteps{i+1}(1:2,4) * s(k);                  % Create trajectory in x-y plane
+            end
+            x(:,steps) = trSteps{i+1}(1:2,4);
+
+            % RMRC trajectory
+            for j = 1:steps-1
+                xdot = (x(:,j+1) - x(:,j))/deltaT;                             % Calculate velocity at discrete time step
+                J = myUR3.model.jacob0(qmatrix(rowIdx + j - 1, :));            % Get the Jacobian at the current state
+                J = J(1:2,:);                           % Take only first 2 rows
+                qdot = pinv(J)*xdot;                             % Solve velocitities via RMRC
+                qmatrix(rowIdx + j,:) =  qmatrix(rowIdx + j - 1,:) + deltaT * qdot';                   % Update next joint state
+            end
+        end
         qmatrix(rowIdx:rowIdx + steps - 1, :) = traj;
 
         if i >= 5 && i <= 6  
@@ -81,10 +82,3 @@ end
 % env = environment();  %%
 % steps = 50;
 % ur3TrajectoryQmatrix = calculateUr3Trajectory(myUR3, steps); 
-% 
-% myUR3.model.delay = 0;
-% for j = 1:size(ur3TrajectoryQmatrix, 1)
-%     myUR3.model.animate(ur3TrajectoryQmatrix(j, :));
-%     drawnow(); 
-%     pause(0.01);  
-% end

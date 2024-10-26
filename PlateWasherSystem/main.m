@@ -24,4 +24,4 @@ for i = 1:size(niryoTrajectoryQmatrix, 1)
     myNiryoOne.model.animate(niryoTrajectoryQmatrix(i, :));
     myUR3.model.animate(ur3TrajectoryQmatrix(i, :));
     pause(0.01);
-end  %  
+end  
