@@ -9,16 +9,16 @@
 - [x] Teach Github
 - [X] Model a new 6DOF (or higher) industrial robot arm not in the Toolbox
 	- [X] Exactly like the LinearUR3, except following the DH parameters of our chosen robot
-- [ ] Create a simulated environment for your chosen scenario
+- [-] Create a simulated environment for your chosen scenario
 	- [x] Implement static environment
-- [ ] Implement a MATLAB/Python graphical user interface (GUI) with:
-   - [ ] Advanced "teach" functionality
-   - [ ] Individual joint movements
-   - [ ] Cartesian movements
+- [x] Implement a MATLAB/Python graphical user interface (GUI) with:
+   - [x] Advanced "teach" functionality
+   - [x] Individual joint movements
+   - [x] Cartesian movements
 - [ ] Incorporate a functional e-stop (simulated and real)
-- [ ] Add safety features to the simulated environment:
+- [x] Add safety features to the simulated environment:
    - [X] Barriers
-   - [ ] Warning signs/lights/sirens
+   - [x] Warning signs/lights/sirens
 - [ ] Implement collision detection and avoidance
 - [X] Set up a code repository (preferably GitHub) for the project
 - [X] Complete and submit the Week 7 Proposal:
@@ -27,11 +27,11 @@
 - [X] Update and improve individual SWMS and Risk Assessment from Assignment 1
 - [ ] Create a 1-minute promotional video for Week 11 submission
 - [ ] Develop the final system demonstration:
-    - [ ] Integrate two robot arms
+    - [-] Integrate two robot arms
     - [ ] Implement path planning
     - [ ] Add collision avoidance
-    - [ ] Incorporate real robot functionality
-- [ ] Create the 3-minute final video showcasing the project
-- [ ] Prepare for the final individual code viva
+    - [-] Incorporate real robot functionality
+- [ ] Create the 3-minute final video showcasing the project (Fri 1/11)
+- [ ] Prepare for the final individual code viva 
 - [ ] Optional: Incorporate additional hardware or RGB-D sensor data for bonus marks
 - [ ] Complete final group member peer feedback via Spark+
