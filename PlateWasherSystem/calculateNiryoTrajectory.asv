@@ -83,9 +83,8 @@ function [niryoTrajectoryQmatrix] = calculateNiryoTrajectory(myNiryoOne, steps, 
         rowIdx = rowIdx + steps;
         disp(rowIdx);
     end
-    niryoTrajectoryQMatrixJoin = qmatrix;
-    niryoTrajectoryQmatrix = qmatrix;
     
+    niryoTrajectoryQmatrix = qmatrix;
 
     % myNiryoOne.model.delay = 0;
     
@@ -93,7 +92,8 @@ function [niryoTrajectoryQmatrix] = calculateNiryoTrajectory(myNiryoOne, steps, 
         %     disp('Collision detected at step: ');
         %     disp(j);
         % end
-        
+    
+    myNiryoOne.model.delay = 0;
     myNiryoOne.model.animate(niryoTrajectoryQmatrix(j,:));
     % niryoOneCurrentJointPosition = [niryoTrajectoryQmatrix(j,:); niryoTrajectoryQmatrix(j,:)];                                                       % from q1 to q2
     isCollision = true;
@@ -102,20 +102,25 @@ function [niryoTrajectoryQmatrix] = calculateNiryoTrajectory(myNiryoOne, steps, 
     while(isCollision)
     startWaypoint = checkedTillWaypoint;
         for j = startWaypoint:size(niryoTrajectoryQmatrix, 1)-1  % from startwaypoint to last one
-            niryoTrajectoryQMatrixJoin = FineInterpolation(niryoTrajectoryQmatrix(j:j+1,:),deg2rad(10));        
-            if ~IsCollision(myNiryoOne, niryoTrajectoryQmatrix(j + 1,:),faces, vertex, faceNormals)
+            
+            qWaypoints = [niryoTrajectoryQmatrix(j,:); niryoTrajectoryQmatrix(j + 1,:)];
+            % forming array
+            niryoTrajectoryQMatrixJoin = InterpolateWaypointRadians(qWaypoints(j:j+1,:),deg2rad(10));        
+            if ~IsCollision(myNiryoOne, niryoTrajectoryQMatrixJoin,faces, vertex, faceNormals)
                 % QMatrix with interpolated QMatrix
                 % niryoTrajectoryQmatrix = [niryoTrajectoryQmatrix(j,:); niryoTrajectoryQMatrixJoin];
-                
+
                 % print size before concatenation 
+                disp('Size of niryoTrajectoryQmatrix(j,:) before concatenation:');
                 disp(size(niryoTrajectoryQmatrix(j,:)));
+                disp('Size of niryoTrajectoryQMatrixJoin before concatenation:');
                 disp(size(niryoTrajectoryQMatrixJoin));
-                
-                if size(niryoTrajectoryQmatrix(j,:), 2) == size(niryoTrajectoryQMatrixJoin, 2)
-                    niryoTrajectoryQmatrix = [niryoTrajectoryQmatrix(1:j,:); niryoTrajectoryQMatrixJoin; niryoTrajectoryQmatrix(j+1:end,:)];
-                else
-                    disp('Inconsistent dimensions. Cannot concatenate.');
-                end
+                                
+                % if size(niryoTrajectoryQmatrix(j,:), 2) == size(niryoTrajectoryQMatrixJoin, 2)
+                %     niryoTrajectoryQmatrix = [niryoTrajectoryQmatrix(1:j,:); niryoTrajectoryQMatrixJoin; niryoTrajectoryQmatrix(j+1:end,:)];
+                % else
+                %     disp('Inconsistent dimensions. Cannot concatenate.');
+                % end
 
                 myNiryoOne.model.animate(niryoTrajectoryQMatrixJoin);
 
@@ -123,10 +128,10 @@ function [niryoTrajectoryQmatrix] = calculateNiryoTrajectory(myNiryoOne, steps, 
                 checkedTillWaypoint = i + 1;
 
                 % Now try and join to the final goal (q2)
-                niryoTrajectoryQMatrixJoin = FineInterpolation([niryoTrajectoryQmatrix(end,:); q2],deg2rad(10));
+                niryoTrajectoryQMatrixJoin = InterpolateWaypointRadians([niryoTrajectoryQmatrix(end,:); niryoTrajectoryQmatrix(j+1,:)],deg2rad(10));
                 
-                if ~IsCollision(myNiryoOne, niryoTrajectoryQmatrix(j + 1,:), faces, vertex, faceNormals)
-                    niryoTrajectoryQmatrix = [niryoTrajectoryQmatrix(j,:); niryoTrajectoryQMatrixJoin];
+                if ~IsCollision(myNiryoOne, niryoTrajectoryQMatrixJoin, faces, vertex, faceNormals)
+                    niryoTrajectoryQmatrix = [niryoTrajectoryQmatrix(1:j,:); niryoTrajectoryQMatrixJoin];
                     % Reached goal without collision, so break out
                     break;
                 end
@@ -136,7 +141,7 @@ function [niryoTrajectoryQmatrix] = calculateNiryoTrajectory(myNiryoOne, steps, 
                 while IsCollision(myNiryoOne, qRand, faces, vertex, faceNormals)
                     qRand = (2 * rand(1, 6) - 1) * pi; % Random joint angles within [-pi, pi]
                 end
-                niryoTrajectoryQmatrix =[niryoTrajectoryQmatrix(1:j,:); qRand; niryoTrajectoryQmatrix(j+1:end,:)];
+                qWaypoints =[qWaypoints(1:j,:); qRand; qWaypoints(j+1:end,:)];
                 isCollision = true;
                 break;
             end
@@ -260,9 +265,28 @@ function niryoTrajectoryQmatrix = FineInterpolation(q1,q2,maxStepRadians)
         end
         steps = steps + 1;
     end
-
+    % check jtraj has correct matrix size
     niryoTrajectoryQmatrix = jtraj(q1,q2,steps);
+
+    if size(niryoTrajectoryQmatrix, 2) ~= 6
+        error('Unexpected output dimension from FineInterpolation. Ensure 6 columns.');
+    end
 end
+
+
+%% InterpolateWaypointRadians
+% Given a set of waypoints, finely intepolate them
+function qMatrix = InterpolateWaypointRadians(waypointRadians,maxStepRadians)
+if nargin < 2
+    maxStepRadians = deg2rad(1);
+end
+
+qMatrix = [];
+for i = 1: size(waypointRadians,1)-1 % amking array for qmatrix
+    qMatrix = [qMatrix ; FineInterpolation(waypointRadians(i,:),waypointRadians(i+1,:),maxStepRadians)]; %#ok<AGROW>
+end
+end
+
 
 % %% GenerateRandConfig
 % function qRand = GenerateRandConfig(myNiryoOne)
