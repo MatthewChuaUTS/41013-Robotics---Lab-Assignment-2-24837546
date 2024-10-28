@@ -40,10 +40,12 @@ classdef RobotPiggy < handle
             
             % % Define the object’s movement path (line segment)
             baseTr = self.piggyModel.base.T;
+            baseTr = baseTr(1:3, 4)';
 
-            point1OnLine = baseTr(1:3, 4)';
-            point2OnLine = point1OnLine;  % End position of the pig.
-            point2OnLine(2) = point2OnLine(2) + 0.2;
+            point1OnLine = baseTr;
+            point1OnLine = point1OnLine(2) - 0.25;
+            point2OnLine = baseTr;  % End position of the pig.
+            point2OnLine(2) = point2OnLine(2) + 0.25;
             
             [intersectionPoint,check] = LinePlaneIntersection(planeNormal,pointOnPlane,point1OnLine,point2OnLine);
         end
