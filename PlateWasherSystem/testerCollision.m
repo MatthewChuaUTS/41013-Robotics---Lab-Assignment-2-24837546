@@ -2,7 +2,7 @@
 myNiryoOne = niryoOne();
 
 % Define the obstacle (adjust as needed for your environment)
-centerpnt = [0.5, 0.2, 0.3];
+centerpnt = [0.2, 0.1, 0.2];
 side = 0.3;
 plotOptions.plotFaces = true;
 [vertex, faces, faceNormals] = RectangularPrism(centerpnt-side/2, centerpnt+side/2, plotOptions);
