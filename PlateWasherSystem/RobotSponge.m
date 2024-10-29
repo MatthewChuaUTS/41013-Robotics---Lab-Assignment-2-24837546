@@ -41,5 +41,9 @@ classdef RobotSponge < handle
         function pose = get_sponge_pose(self)
             pose = self.spongePose;
         end
+        %% Delete 
+        function Hide(self)
+            set(self.spongeMesh_h, 'Visible', 'off');
+        end
     end
 end

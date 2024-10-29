@@ -41,5 +41,9 @@ classdef RobotPlate < handle
         function pose = get_plate_pose(self)
             pose = self.platePose;
         end
+        %% Delete
+        function Hide(self)
+            set(self.plateMesh_h, 'Visible', 'off');
+        end
     end
 end
