@@ -24,9 +24,9 @@ Ur3Waypoints = {transl([0.747,-0.049,0.072]) * troty(pi) ... % sponge 1
     , transl([0.7795, 0.1269, 0.3629]) * troty(pi) ...  % srub position 2
     , transl([0.7795, 0.1269, 0.3629]) * troty(pi) ...  % srub position 3
     , transl([0.7795, 0.1269, 0.3629]) * troty(pi) ...  % srub position 4
-    , transl([0.7795, 0.1471, 0.3629]) * troty(pi) * trotx(-pi/2) ...  % srub position 5
-    , transl([0.7795, 0.1471, 0.3629]) * troty(pi) * trotx(-pi/2) ...  % srub 6
-    , transl([0.7795, 0.1471, 0.3629]) * troty(pi) * trotx(-pi/2) ...  % srub 7
+    , transl([0.7795, 0.1269, 0.3629]) * troty(pi) * trotx(-pi/2) ...  % srub position 5
+    , transl([0.7795, 0.1269, 0.3629]) * troty(pi) * trotx(-pi/2) ...  % srub 6
+    , transl([0.7795, 0.1269, 0.3629]) * troty(pi) * trotx(-pi/2) ...  % srub 7
     , transl([0.747,-0.049,0.072]) * troty(pi) ... % sponge 8
     , transl([0.8247, 0.2134, 0.5401]) * troty(pi) ...  % hold 9
     , transl([0.8247, 0.2134, 0.5401]) * troty(pi) ...  % hold 10
@@ -41,6 +41,15 @@ Ur3Waypoints = {transl([0.747,-0.049,0.072]) * troty(pi) ... % sponge 1
 
 env = environment();
 
+showCollision = 1;
+if showCollision
+    centerpnt = [0.15, 0.04, 0.21];
+    side = 0.2;
+    plotOptions.plotFaces = true; %change for render during demo?
+    [vertex, faces, faceNormals] = RectangularPrism(centerpnt-side/2, centerpnt+side/2, plotOptions);
+end
+
+
 % Set up Robot 1
 niryoOneCurrentJointPosition = [0, 0, 0, 0, 0, 0];  
 myNiryoOne = niryoOne(transl(0.54, -0.01, 0));  
@@ -49,85 +58,59 @@ myNiryoOne.model.animate(niryoOneCurrentJointPosition);
 % Set up Robot 2
 % NOTE, SET UR3 QLIM JOINT 2 TO 30 AND 150 DEG, WHATEVER THAT IS IN RAD
 UR3CurrentJointPosition = [0, -pi/2, 0, 0, -pi/2, 0];  
-myUR3 = UR3(transl(1.02, -0.01, 0));                                              
+myUR3 = UR3e(transl(1.02, -0.01, 0));                                              
 myUR3.model.animate(UR3CurrentJointPosition); 
 
 % Set up plate
-initialPlatePose = transl(0.15, 0.061, 0.1) * trotx(pi/2) ; 
+initialPlatePose = transl(0.22, 0.061, 0.195); 
 plate = RobotPlate(initialPlatePose);
+
 
 % Set up sponge
 initialSpongePose = transl(0.747,-0.049,0.072); 
 sponge = RobotSponge(initialSpongePose);
 
+
 % Animatestep
 steps = 50;
-niryoTrajectoryQmatrix = calculateRobotTrajectory(myNiryoOne, niryoWaypoints, steps);
-ur3TrajectoryQmatrix = calculateRobotTrajectory(myUR3, Ur3Waypoints, steps);
+[niryoTrajectoryQmatrix, collisionFlagN] = calculateRobotTrajectory(myNiryoOne, niryoWaypoints, steps, vertex, faces, faceNormals);
+[ur3TrajectoryQmatrix, collisionFlagU] = calculateRobotTrajectory(myUR3, Ur3Waypoints, steps, vertex, faces, faceNormals);
 
-collisionDetected = false;
+collisionDetected = collisionFlagN || collisionFlagU;
 safety = 1;
 
 for waypoint = 1:size(niryoTrajectoryQmatrix, 2)
     for jointStep = 1:size(niryoTrajectoryQmatrix{1}, 1)
         if safety == 1
-            myNiryoOne.model.delay = 0;
-            myUR3.model.delay = 0;
             myNiryoOne.model.animate(niryoTrajectoryQmatrix{waypoint}(jointStep,:));
             myUR3.model.animate(ur3TrajectoryQmatrix{waypoint}(jointStep,:));
-            niryoEndEffectorPose = myNiryoOne.model.fkine(niryoTrajectoryQmatrix{waypoint}(jointStep,:)).T;
-            ur3EndEffectorPose = myUR3.model.fkine(ur3TrajectoryQmatrix{waypoint}(jointStep,:)).T;
+            niryoEndEffectorPose = myNiryoOne.model.fkine(niryoTrajectoryQmatrix{waypoint}(jointStep,:));
 
-            if (waypoint <= 8)
+
+             if (waypoint <= 8)
+                % Mount plate
                 plateAttached = true;
-                platePose = niryoEndEffectorPose * transl(0, 0, -0.05) * trotx(pi/2);
-                plate.PlotPlate(platePose);   
-                spongeAttached = true;
-                spongePose = ur3EndEffectorPose * transl(0, 0, 0.05);
-                sponge.PlotSponge(spongePose);
-
-            elseif (waypoint == 9)
-                spongeAttached = true;
-                spongePose = niryoEndEffectorPose * transl(0, 0, 0.05);
-                sponge.PlotSponge(spongePose);
-
-            elseif (waypoint >= 10 && waypoint <= 14)
-                plateAttached = true;
-                platePose = ur3EndEffectorPose * transl(0, 0, 0.05) * trotx(pi/2);
-                plate.PlotPlate(platePose);   
-                spongeAttached = true;
-                spongePose = niryoEndEffectorPose * transl(0, 0, 0.05);
-                sponge.PlotSponge(spongePose);
-            
-            elseif (waypoint == 15)
-                spongeAttached = true;
-                spongePose = niryoEndEffectorPose * transl(0, 0, 0.15);
-                sponge.PlotSponge(spongePose);
-                sponge.Hide();
-                sponge = RobotSponge(transl(0.747,-0.049,0));
-
-            elseif (waypoint >= 16)
+                platePose = niryoEndEffectorPose.T * transl(0, 0, -0.05) * trotx(pi/2);
+                plate.PlotPlate(platePose);
+            elseif (waypoint == 9 && plateAttached)
+                % Detach plate
                 plateAttached = false;
-                plate.Hide();
-                
-                plate = RobotPlate(transl(1.165, 0.3, 0));
-                
+                plate.Hide();            
             end
-            % rowIdx = rowIdx + steps;
-       
-        
-            % % Mount plate
-            % niryoEndEffectorPose = myNiryoOne.model.fkine(niryoTrajectoryQmatrix{waypoint}(jointStep,:)).T;
-            % platePose = niryoEndEffectorPose * transl(0, 0, -0.05) * trotx(pi/2); % Offset the plate slightly below the end-effector
-            % plate.PlotPlate(platePose);
-            % 
-            % % Mount sponge
-            % ur3EndEffectorPose = myUR3.model.fkine(ur3TrajectoryQmatrix{waypoint}(jointStep,:)).T;
-            % spongePose = ur3EndEffectorPose * transl(0, 0, -0.05); % Offset the plate slightly below the end-effector
-            % sponge.PlotSponge(spongePose);
-            % 
-            % drawnow();
-            % pause(0.01);
+
+            if (waypoint >= 10 && waypoint <= 15)
+                % Mount sponge
+                spongeAttached = true;
+                spongePose = niryoEndEffectorPose.T * transl(0, 0, -0.05);
+                sponge.PlotSponge(spongePose);
+            elseif (waypoint == 16 && spongeAttached)
+                % Detach sponge
+                spongeAttached = false;
+                sponge.Hide();
+            end
+
+            drawnow();
+            pause(0.01);
         else
             outputBar.Value = 'Sequence paused due to safety concerns';
             return;
@@ -137,12 +120,12 @@ for waypoint = 1:size(niryoTrajectoryQmatrix, 2)
         break;
     end
 end
-
-if collisionDetected
-    outputBar.Value = 'Collision detected! Animation stopped.';
-else
-    outputBar.Value = 'Sequence completed successfully';
-end
+% 
+% if collisionDetected
+%     outputBar.Value = 'Collision detected! Animation stopped.';
+% else
+%     outputBar.Value = 'Sequence completed successfully';
+% end
 
 
 
