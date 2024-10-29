@@ -2,11 +2,7 @@
 myNiryoOne = niryoOne();
 
 % Define the obstacle (adjust as needed for your environment)
-<<<<<<< HEAD
 centerpnt = [0, 0.4, 0.3];
-=======
-centerpnt = [0.2, 0.1, 0.2];
->>>>>>> 10071a0869e328942fe07f6a5e34d90b2d3fc7a0
 side = 0.3;
 plotOptions.plotFaces = true;
 [vertex, faces, faceNormals] = RectangularPrism(centerpnt-side/2, centerpnt+side/2, plotOptions);
@@ -88,8 +84,8 @@ else
     myNiryoOne.model.animate(qMatrix);
 end
 
-for j = 1:size(qMatrix, 1)
-    myNiryoOne.model.animate(qMatrix(j, :));
+for j = 1:size(qMatrixJoin, 1)
+    myNiryoOne.model.animate(qMatrixJoin(j, :));
     drawnow(); 
     pause(0.01);  
 end

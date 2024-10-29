@@ -3,8 +3,6 @@ classdef environment < handle
         sponge;
         plate;
         warningLightHandle;
-        startPlate;
-        endPlate;
     end
     
     properties (Access = public)
@@ -54,8 +52,6 @@ classdef environment < handle
             self.placeStaticEnvironmentObjects();
             self.sponge = PlaceObject('sponge.ply', [0.75, -0.06, 0]);
             self.setWarningLight();
-            self.startPlate = PlaceObject('plate.ply', [0.13, -0.1, 0.14]);
-            self.endPlate = PlaceObject('plate.ply', [1.15, 0.21, 0.08]);
         end
 
         function placeRoom(self)

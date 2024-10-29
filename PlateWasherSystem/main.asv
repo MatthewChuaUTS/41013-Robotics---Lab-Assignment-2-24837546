@@ -39,7 +39,7 @@ Ur3Waypoints = {transl([0.747,-0.049,0.072]) * troty(pi) ... % sponge 1
     , transl([0.9346, -0.1223, 0.5269]) * troty(pi) ...  % reset 17
     , transl([0.9346, -0.1223, 0.5269]) * troty(pi)};  % reset 18
 
-% env = environment();
+env = environment();
 
 % Set up Robot 1
 niryoOneCurrentJointPosition = [0, 0, 0, 0, 0, 0];  
@@ -56,9 +56,9 @@ myUR3.model.animate(UR3CurrentJointPosition);
 initialPlatePose = transl(0.22, 0.061, 0.195); 
 plate = RobotPlate(initialPlatePose);
 
-% Set up sponge
-initialSpongePose = transl(0.747,-0.049,0.072); 
-sponge = RobotSponge(initialSpongePose);
+% Set up plate
+initialPlatePose = transl(0.22, 0.061, 0.195); 
+plate = RobotPlate(initialPlatePose);
 
 % Animatestep
 steps = 50;
@@ -81,7 +81,7 @@ for waypoint = 1:size(niryoTrajectoryQmatrix, 2)
 
             % Mount sponge
             ur3EndEffectorPose = myUR3.model.fkine(ur3TrajectoryQmatrix{waypoint}(jointStep,:)).T;
-            spongePose = ur3EndEffectorPose * transl(0, 0, -0.05); % Offset the plate slightly below the end-effector
+            Pose = niryoEndEffectorPose * transl(0, 0, -0.05) * trotx(pi/2); % Offset the plate slightly below the end-effector
             sponge.PlotSponge(spongePose);
            
             drawnow();

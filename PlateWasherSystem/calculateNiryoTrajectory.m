@@ -68,10 +68,10 @@ function [niryoTrajectoryQmatrix] = calculateNiryoTrajectory(myNiryoOne, faces, 
      
     while (isCollision)
     startWaypoint = checkedTillWaypoint;
-        for i = startWaypoint:size(qWaypoints,1)-1                              % from startwaypoint to last one
+        for i = startWaypoint:size(qWaypointsJoints,1)-1                              % from startwaypoint to last one
             % making array size according to 10 deg (differs for each
             % trajectory)   
-            qMatrixJoin = InterpolateWaypointRadians(qWaypoints(i:i+1,:),deg2rad(10));
+            qMatrixJoin = InterpolateWaypointRadians(qWaypointsJoints(i:i+1,:),deg2rad(10));
             if ~IsCollision(myNiryoOne,qMatrixJoin,faces,vertex,faceNormals)
                 qMatrix = [qMatrix; qMatrixJoin]; %#ok<AGROW>
                 % robot.animate(qMatrixJoin);
@@ -87,11 +87,11 @@ function [niryoTrajectoryQmatrix] = calculateNiryoTrajectory(myNiryoOne, faces, 
                 end
             else
                 % Randomly pick a pose that is not in collision
-                qRand = (2 * rand(1,3) - 1) * pi;
-                while IsCollision(robot,qRand,faces,vertex,faceNormals)
+                qRand = (2 * rand(1,6) - 1) * pi;
+                while IsCollision(myNiryoOne,qRand,faces,vertex,faceNormals)
                     qRand = (2 * rand(1,3) - 1) * pi;
                 end
-                qWaypoints =[ qWaypoints(1:i,:); qRand; qWaypoints(i+1:end,:)];
+                qWaypointsJoints =[ qWaypointsJoints(1:i,:); qRand; qWaypointsJoints(i+1:end,:)];
                 isCollision = true;
                 break;
             end
@@ -156,6 +156,7 @@ function CollisionIsDetected = IsCollision(myNiryoOne,niryoTrajectoryQmatrix,fac
 
     for qIndex = 1:size(niryoTrajectoryQmatrix,1)
         % Get the transform of every joint (i.e. start and end of every link)
+        disp(niryoTrajectoryQmatrix)
         tr = GetLinkPoses(niryoTrajectoryQmatrix(qIndex,:), myNiryoOne);
 
         % Go through each link and also each triangle face
@@ -192,6 +193,8 @@ function [ transforms ] = GetLinkPoses(q, myNiryoOne)
 
         current_transform = transforms(:,:, i);
 
+        disp(q)
+        disp("new")
         current_transform = current_transform * trotz(q(1,i) + L.offset) * ...
         transl(0,0, L.d) * transl(L.a,0,0) * trotx(L.alpha);
         transforms(:,:,i + 1) = current_transform;
