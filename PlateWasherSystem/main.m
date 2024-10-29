@@ -39,7 +39,7 @@ Ur3Waypoints = {transl([0.747,-0.049,0.072]) * troty(pi) ... % sponge 1
     , transl([0.9346, -0.1223, 0.5269]) * troty(pi) ...  % reset 17
     , transl([0.9346, -0.1223, 0.5269]) * troty(pi)};  % reset 18
 
-% env = environment();
+env = environment();
 
 % Set up Robot 1
 niryoOneCurrentJointPosition = [0, 0, 0, 0, 0, 0];  
@@ -56,51 +56,68 @@ myUR3.model.animate(UR3CurrentJointPosition);
 initialPlatePose = transl(0.22, 0.061, 0.195); 
 plate = RobotPlate(initialPlatePose);
 
+
 % Set up sponge
 initialSpongePose = transl(0.747,-0.049,0.072); 
 sponge = RobotSponge(initialSpongePose);
+
+
+
 
 % Animatestep
 steps = 50;
 niryoTrajectoryQmatrix = calculateRobotTrajectory(myNiryoOne, niryoWaypoints, steps);
 ur3TrajectoryQmatrix = calculateRobotTrajectory(myUR3, Ur3Waypoints, steps);
 
-collisionDetected = false;
-safety = 1;
+% collisionDetected = false;
+% safety = 1;
 
-for waypoint = 1:size(niryoTrajectoryQmatrix, 2)
-    for jointStep = 1:size(niryoTrajectoryQmatrix{1}, 1)
-        if safety == 1
-            myNiryoOne.model.animate(niryoTrajectoryQmatrix{waypoint}(jointStep,:));
-            myUR3.model.animate(ur3TrajectoryQmatrix{waypoint}(jointStep,:));
-           
-            % Mount plate
-            niryoEndEffectorPose = myNiryoOne.model.fkine(niryoTrajectoryQmatrix{waypoint}(jointStep,:)).T;
-            platePose = niryoEndEffectorPose * transl(0, 0, -0.05) * trotx(pi/2); % Offset the plate slightly below the end-effector
-            plate.PlotPlate(platePose);
-
-            % Mount sponge
-            ur3EndEffectorPose = myUR3.model.fkine(ur3TrajectoryQmatrix{waypoint}(jointStep,:)).T;
-            spongePose = ur3EndEffectorPose * transl(0, 0, -0.05); % Offset the plate slightly below the end-effector
-            sponge.PlotSponge(spongePose);
-           
-            drawnow();
-            pause(0.01);
-        else
-            outputBar.Value = 'Sequence paused due to safety concerns';
-            return;
-        end
-    end
-    if collisionDetected
-        break;
-    end
-end
-
-if collisionDetected
-    outputBar.Value = 'Collision detected! Animation stopped.';
-else
-    outputBar.Value = 'Sequence completed successfully';
-end
+% for waypoint = 1:size(niryoTrajectoryQmatrix, 2)
+%     for jointStep = 1:size(niryoTrajectoryQmatrix{1}, 1)
+%         if safety == 1
+%             myNiryoOne.model.animate(niryoTrajectoryQmatrix{waypoint}(jointStep,:));
+%             myUR3.model.animate(ur3TrajectoryQmatrix{waypoint}(jointStep,:));
+% 
+% 
+%              if (waypoint <= 8)
+%                 % Mount plate
+%                 plateAttached = true;
+%                 platePose = niryoEndEffectorPose * transl(0, 0, -0.05) * trotx(pi/2);
+%                 plate.PlotPlate(platePose);
+%             elseif (waypoint == 9 && plateAttached)
+%                 % Detach plate
+%                 plateAttached = false;
+%                 plate.Hide();            
+%             end
+% 
+%             if (waypoint >= 10 && waypoint <= 15)
+%                 % Mount sponge
+%                 spongeAttached = true;
+%                 spongePose = niryoEndEffectorPose * transl(0, 0, -0.05);
+%                 sponge.PlotSponge(spongePose);
+%             elseif (waypoint == 16 && spongeAttached)
+%                 % Detach sponge
+%                 spongeAttached = false;
+%                 sponge.Hide();
+%             end
+% 
+%             drawnow();
+%             pause(0.01);
+%         else
+%             outputBar.Value = 'Sequence paused due to safety concerns';
+%             return;
+%         end
+%     end
+%     if collisionDetected
+%         break;
+%     end
+% end
+% 
+% if collisionDetected
+%     outputBar.Value = 'Collision detected! Animation stopped.';
+% else
+%     outputBar.Value = 'Sequence completed successfully';
+% end
 
 
 

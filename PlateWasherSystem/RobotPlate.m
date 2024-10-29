@@ -6,6 +6,7 @@ classdef RobotPlate < handle
         platePose;
         plateVerts;
         platevCount;
+        plateModel;
     end
     
     methods

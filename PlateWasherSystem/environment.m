@@ -50,7 +50,7 @@ classdef environment < handle
             
             self.placeRoom();
             self.placeStaticEnvironmentObjects();
-            self.sponge = PlaceObject('sponge.ply', [0.75, -0.06, 0]);
+            % self.sponge = PlaceObject('sponge.ply', [0.75, -0.06, 0]);
             self.setWarningLight();
         end
 
