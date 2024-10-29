@@ -50,8 +50,17 @@ myNiryoOne.model.animate(niryoOneCurrentJointPosition);
 % NOTE, SET UR3 QLIM JOINT 2 TO 30 AND 150 DEG, WHATEVER THAT IS IN RAD
 UR3CurrentJointPosition = [0, -pi/2, 0, 0, -pi/2, 0];  
 myUR3 = UR3(transl(1.02, -0.01, 0));                                              
-myUR3.model.animate(UR3CurrentJointPosition);  
+myUR3.model.animate(UR3CurrentJointPosition); 
 
+% Set up plate
+initialPlatePose = transl(0.22, 0.061, 0.195); 
+plate = RobotPlate(initialPlatePose);
+
+% Set up sponge
+initialSpongePose = transl(0.747,-0.049,0.072); 
+sponge = RobotSponge(initialSpongePose);
+
+% Animatestep
 steps = 50;
 niryoTrajectoryQmatrix = calculateRobotTrajectory(myNiryoOne, niryoWaypoints, steps);
 ur3TrajectoryQmatrix = calculateRobotTrajectory(myUR3, Ur3Waypoints, steps);
@@ -65,11 +74,16 @@ for waypoint = 1:size(niryoTrajectoryQmatrix, 2)
             myNiryoOne.model.animate(niryoTrajectoryQmatrix{waypoint}(jointStep,:));
             myUR3.model.animate(ur3TrajectoryQmatrix{waypoint}(jointStep,:));
            
-            % ur5Robot.model.animate(qMatrix(i,:));
-            % cowHerd.cowModel{1}.base = ur5Robot.model.fkine(qMatrix(i,:));
-            % cowHerd.cowModel{1}.animate(0);
-               
-            end
+            % Mount plate
+            niryoEndEffectorPose = myNiryoOne.model.fkine(niryoTrajectoryQmatrix{waypoint}(jointStep,:)).T;
+            platePose = niryoEndEffectorPose * transl(0, 0, -0.05) * trotx(pi/2); % Offset the plate slightly below the end-effector
+            plate.PlotPlate(platePose);
+
+            % Mount sponge
+            ur3EndEffectorPose = myUR3.model.fkine(ur3TrajectoryQmatrix{waypoint}(jointStep,:)).T;
+            spongePose = ur3EndEffectorPose * transl(0, 0, -0.05); % Offset the plate slightly below the end-effector
+            sponge.PlotSponge(spongePose);
+           
             drawnow();
             pause(0.01);
         else

@@ -1,46 +1,45 @@
 classdef RobotPlate < handle
-    %ROBOTPIGGY A class that creates a robot piggy
-	%   The piggy can be moved around randomly. It is then possible to query
-    %   the current location (base) of the piggy.    
+    % PLATE A class that creates a brick object using the plate.ply file
     
     properties
-        %> A single piggy model RobotCows
-        plateModel;
+        plateMesh_h;
+        platePose;
+        plateVerts;
+        platevCount;
     end
     
     methods
         %% Constructor
-        function self = RobotPlate(baseTr)
-            self.plateModel = self.getPlateModel('plate');
-            self.plateModel.base = baseTr;
-            % Plot 3D model
-            % plot3d(self.piggyModel, 0, 'base', false);
-            % self.PlotAndColourRobot();
-            plot3d(self.plateModel, 0, 'workspace', [-1.6, 0.6, -1.6, 0.6, -0.7971, 1], 'view', [-30,30], 'noarrow', 'nowrist', 'color', {'hotpink'}, 'notiles');
-            hold on;
+        function self = RobotPlate(position)
+            if nargin < 1
+                position = eye(4);  % Set custom position if provided
+            end
+            self.platePose = position;
+            [f,v,data] = plyread('plate.ply','tri');
+            self.platevCount = size(v,1);                                                    % Get vertex count
+            midPoint = sum(v)/self.platevCount;                                              % Move center point to origin
+            self.plateVerts = v - repmat(midPoint,self.platevCount,1);
+            
+            %platePose = transl(-0.2,-0.5,0.1);
+            % self.platePose = position;
+            plateVerts_hom = [self.plateVerts, ones(self.platevCount, 1)];  % 964x4                  % Convert brickVerts to homogeneous coordinates (964x4)
+            updatedPoints = (self.platePose * plateVerts_hom')';                             % Transform the vertices
+            self.plateMesh_h = trisurf(f, updatedPoints(:,1), updatedPoints(:,2), updatedPoints(:,3) ...
+                ,'FaceVertexCData',[data.vertex.red, data.vertex.green, data.vertex.blue] / 255, ...
+                'EdgeColor','interp','EdgeLighting','flat');                            % Now update the mesh Vertices
+            drawnow(); 
+        end
+        %% Plot
+        function PlotPlate(self,newPosition)
+            self.platePose = newPosition;
+            plateVerts_hom = [self.plateVerts, ones(self.platevCount, 1)]; 
+            updatedPoints = (self.platePose * plateVerts_hom')';
+            self.plateMesh_h.Vertices = updatedPoints(:,1:3);
+            drawnow();
         end
        
-        %% Move the piggy forward and rotate randomly
-        function movePlate(self, position)
-            % Update piggy position
-            self.plateModel.base = position;
-            animate(self.plateModel, 0);                
-            drawnow();
-        end    
-    end
-    
-    methods (Static)
-        %% GetPlateModel
-        function model = getPlateModel(name)
-            if nargin < 1
-                name = 'Plate';
-            end
-            
-            [faceData, vertexData] = plyread('plate.ply', 'tri');
-            link1 = Link('alpha', pi / 2, 'a', 0, 'd', 0.3, 'offset', 0);
-            model = SerialLink(link1, 'name', name);
-            model.faces = {[], faceData};
-            model.points = {[], vertexData};
+        function pose = get_plate_pose(self)
+            pose = self.platePose;
         end
-    end    
+    end
 end
