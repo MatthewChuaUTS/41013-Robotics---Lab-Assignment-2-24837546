@@ -1,8 +1,5 @@
-function [niryoTrajectoryQmatrix] = calculateNiryoTrajectory(myNiryoOne, steps, faces, vertex, faceNormals) %returnOnceFound
+function [niryoTrajectoryQmatrix] = calculateNiryoTrajectory(myNiryoOne, faces, vertex, faceNormals) %returnOnceFound
     if nargin < 2
-        steps = 50;
-    end
-    if nargin < 3
         % Default values if faces, vertex, and faceNormals are not provided
         centerpnt = [1,1,1];
         side = 0.2;
@@ -15,201 +12,98 @@ function [niryoTrajectoryQmatrix] = calculateNiryoTrajectory(myNiryoOne, steps, 
     %     % returnOnceFound = true;
     % end
 
-    trSteps = {transl([0.22,0.061,0.195]) ... % plate 1
-        , transl([0.358,0.196,0.244]) ... % point2 2
-        , transl([0.358,0.196,-0.005]) ... % dunk 3
-        , transl([0.358,0.196,0.406]) ... % point4 4  RMRC in lab happens for same axis, goes straight, is it kay if the points are short?
-        , transl([0.6975,0.263,0.3915]) ... % hold 5
-        , transl([0.6975,0.263,0.3915]) ... % hold 6
-        , transl([0.6975,0.263,0.3915]) ... % hold 7
-        , transl([0.6975,0.263,0.3915]) ... % hold 8
-        , transl([0.6975,0.263,0.3915]) ... % hold 9
-        , transl([0.747,-0.049,0.072]) ... % sponge 10
-        , transl([0.726,0.1495,0.4695]) * trotx(pi/2) ... % scrub position 11
-        , transl([0.726,0.1495,0.4695]) * trotx(pi/2) ... % scrub 12
-        , transl([0.726,0.1495,0.4695]) * trotx(pi/2) ... % srub 13
-        , transl([0.726,0.1495,0.4695]) ... % scrub position 14
-        , transl([0.747,-0.049,0.072]) ... % sponge 15
-        , transl([0.3203,-0.01,0.423]) * trotx(-pi/2) ... % reset 16
-        , transl([0.3203,-0.01,0.423]) * trotx(-pi/2) ... % reset 17
-        , transl([0.3203,-0.01,0.423]) * trotx(-pi/2)}; % reset 18
-
-    % Preallocate qmatrix for 600 rows (12 segments x 50 steps) and 6 columns
-    % (more rows for this one, will eventually made it equal to ur3)
-    qmatrix = zeros((length(trSteps) - 1) * steps, 6);
-    qWaypoints = zeros((length(trSteps)) * steps, 6); 
-    deltaT = 0.05; 
     niryoOneCurrentJointPosition = [0, 0, 0, 0, 0, 0];
     myNiryoOne.model.plot(niryoOneCurrentJointPosition);  % this is for
-    % function testing
- 
-    % Generate the joint angle using ikcon
-    for i = 1:length(trSteps)
-        qWaypoints(i, :) = myNiryoOne.model.ikcon(trSteps{i}, niryoOneCurrentJointPosition);
-        niryoOneCurrentJointPosition = qWaypoints(i, :); 
-    end
 
-    % Generate the trajectory and store it in the preallocated matrix
-    rowIdx = 1;  
-%     for i = 1:(length(trSteps) - 1) 
-%         traj = jtraj(qWaypoints(i, :), qWaypoints(i + 1, :), steps);
-%         if (i >= 1 && i <= 10) || (i > 12)
-%             x = zeros(2,steps);
-%             s = lspb(0,1,steps);                                 % Create interpolation scalar
-% 
-%             % calculate cells for x
-%             for k = 1:steps-1
-%                 x(:,k) = trSteps{i}(1:2,4) * (1-s(k)) + trSteps{i+1}(1:2,4) * s(k);                  % Create trajectory in x-y plane
-%             end
-%             x(:,steps) = trSteps{i+1}(1:2,4);
-% 
-%             % RMRC trajectory
-%             for j = 1:steps-1
-%                 xdot = (x(:,j+1) - x(:,j))/deltaT;                             % Calculate velocity at discrete time step
-%                 J = myNiryoOne.model.jacob0(qmatrix(rowIdx + j - 1, :));            % Get the Jacobian at the current state
-%                 J = J(1:2,:);                           % Take only first 2 rows
-%                 qdot = pinv(J)*xdot;                             % Solve velocitities via RMRC
-%                 qmatrix(rowIdx + j,:) =  qmatrix(rowIdx + j - 1,:) + deltaT * qdot';                   % Update next joint state
-%             end
-%         end
-%         qmatrix(rowIdx:rowIdx + steps - 1, :) = traj;
-% 
-%         if i >= 11 && i <= 12 
-%             for j = 1:steps
-%                 traj(j, 6) = traj(j, 6) + deg2rad(360 * j / steps);  
-%             end
-%         end
-%         qmatrix(rowIdx:rowIdx + steps - 1, :) = traj;
-%         rowIdx = rowIdx + steps;
-%         disp(rowIdx);
-%     end
-% 
-%     niryoTrajectoryQmatrix = qmatrix;
-% 
-%     % myNiryoOne.model.delay = 0;
-% 
-%         % if CollisionIsDetected
-%         %     disp('Collision detected at step: ');
-%         %     disp(j);
-%         % end
-% 
-%     myNiryoOne.model.delay = 0;
-%     myNiryoOne.model.animate(niryoTrajectoryQmatrix(j,:));
-%     % niryoOneCurrentJointPosition = [niryoTrajectoryQmatrix(j,:); niryoTrajectoryQmatrix(j,:)];                                                       % from q1 to q2
-%     isCollision = true;
-%     checkedTillWaypoint = 1;                                                    % distance robot moved without collision 1 = q1
-% 
-%     while(isCollision)
-%     startWaypoint = checkedTillWaypoint;
-%         for j = startWaypoint:size(niryoTrajectoryQmatrix, 1)-1  % from startwaypoint to last one
-% 
-%             qWaypoints = [niryoTrajectoryQmatrix(j,:); niryoTrajectoryQmatrix(j + 1,:)];
-%             % forming array
-%             niryoTrajectoryQMatrixJoin = InterpolateWaypointRadians(qWaypoints(j:j+1,:),deg2rad(10));        
-%             if ~IsCollision(myNiryoOne, niryoTrajectoryQMatrixJoin,faces, vertex, faceNormals)
-%                 % QMatrix with interpolated QMatrix
-%                 % niryoTrajectoryQmatrix = [niryoTrajectoryQmatrix(j,:); niryoTrajectoryQMatrixJoin];
-% 
-%                 % print size before concatenation 
-%                 disp('Size of niryoTrajectoryQmatrix(j,:) before concatenation:');
-%                 disp(size(niryoTrajectoryQmatrix(j,:)));
-%                 disp('Size of niryoTrajectoryQMatrixJoin before concatenation:');
-%                 disp(size(niryoTrajectoryQMatrixJoin));
-% 
-%                 % if size(niryoTrajectoryQmatrix(j,:), 2) == size(niryoTrajectoryQMatrixJoin, 2)
-%                 %     niryoTrajectoryQmatrix = [niryoTrajectoryQmatrix(1:j,:); niryoTrajectoryQMatrixJoin; niryoTrajectoryQmatrix(j+1:end,:)];
-%                 % else
-%                 %     disp('Inconsistent dimensions. Cannot concatenate.');
-%                 % end
-% 
-%                 myNiryoOne.model.animate(niryoTrajectoryQMatrixJoin);
-% 
-%                 isCollision = false;
-%                 checkedTillWaypoint = i + 1;
-% 
-%                 % Now try and join to the final goal (q2)
-%                 niryoTrajectoryQMatrixJoin = InterpolateWaypointRadians([niryoTrajectoryQmatrix(end,:); niryoTrajectoryQmatrix(j+1,:)],deg2rad(10));
-% 
-%                 if ~IsCollision(myNiryoOne, niryoTrajectoryQMatrixJoin, faces, vertex, faceNormals)
-%                     niryoTrajectoryQmatrix = [niryoTrajectoryQmatrix(1:j,:); niryoTrajectoryQMatrixJoin];
-%                     % Reached goal without collision, so break out
-%                     break;
-%                 end
-%             else
-%                 % Randomly pick a pose that is not in collision
-%                 qRand = (2 * rand(1, 6) - 1) * pi; % Random joint angles within [-pi, pi]
-%                 while IsCollision(myNiryoOne, qRand, faces, vertex, faceNormals)
-%                     qRand = (2 * rand(1, 6) - 1) * pi; % Random joint angles within [-pi, pi]
-%                 end
-%                 qWaypoints =[qWaypoints(1:j,:); qRand; qWaypoints(j+1:end,:)];
-%                 isCollision = true;
-%                 break;
-%             end
-%         end
-%     end
-% 
-%     myNiryoOne.model.animate(qmatrix(j, :));
-%     drawnow();  
-%     pause(0.01); 
-% end
+    % qWaypoints = [transl([0.22,0.061,0.195]) ... % plate 1
+    %     , transl([0.358,0.196,0.244]) ... % point2 2
+    %     , transl([0.358,0.196,-0.005]) ... % dunk 3
+    %     , transl([0.358,0.196,0.406]) ... % point4 4  RMRC in lab happens for same axis, goes straight, is it kay if the points are short?
+    %     , transl([0.6975,0.263,0.3915]) ... % hold 5
+    %     , transl([0.6975,0.263,0.3915]) ... % hold 6
+    %     , transl([0.6975,0.263,0.3915]) ... % hold 7
+    %     , transl([0.6975,0.263,0.3915]) ... % hold 8
+    %     , transl([0.6975,0.263,0.3915]) ... % hold 9
+    %     , transl([0.747,-0.049,0.072]) ... % sponge 10
+    %     , transl([0.726,0.1495,0.4695]) * trotx(pi/2) ... % scrub position 11
+    %     , transl([0.726,0.1495,0.4695]) * trotx(pi/2) ... % scrub 12
+    %     , transl([0.726,0.1495,0.4695]) * trotx(pi/2) ... % srub 13
+    %     , transl([0.726,0.1495,0.4695]) ... % scrub position 14
+    %     , transl([0.747,-0.049,0.072]) ... % sponge 15
+    %     , transl([0.3203,-0.01,0.423]) * trotx(-pi/2) ... % reset 16
+    %     , transl([0.3203,-0.01,0.423]) * trotx(-pi/2) ... % reset 17
+    %     , transl([0.3203,-0.01,0.423]) * trotx(-pi/2)]; % reset 18
+    qWaypoints(:,:,1) = transl([0.22, 0.061, 0.195]); % plate 1
+    qWaypoints(:,:,2) = transl([0.358, 0.196, 0.244]); % point 2
+    qWaypoints(:,:,3) = transl([0.358, 0.196, -0.005]); % dunk 3
+    qWaypoints(:,:,4) = transl([0.358, 0.196, 0.406]); % point 4
+    qWaypoints(:,:,5) = transl([0.6975, 0.263, 0.3915]); % hold 5
+    qWaypoints(:,:,6) = transl([0.6975, 0.263, 0.3915]); % hold 6
+    qWaypoints(:,:,7) = transl([0.6975, 0.263, 0.3915]); % hold 7
+    qWaypoints(:,:,8) = transl([0.6975, 0.263, 0.3915]); % hold 8
+    qWaypoints(:,:,9) = transl([0.6975, 0.263, 0.3915]); % hold 9
+    qWaypoints(:,:,10) = transl([0.747, -0.049, 0.072]); % sponge 10
+    qWaypoints(:,:,11) = transl([0.726, 0.1495, 0.4695]) * trotx(pi/2); % scrub position 11
+    qWaypoints(:,:,12) = transl([0.726, 0.1495, 0.4695]) * trotx(pi/2); % scrub 12
+    qWaypoints(:,:,13) = transl([0.726, 0.1495, 0.4695]) * trotx(pi/2); % scrub 13
+    qWaypoints(:,:,14) = transl([0.726, 0.1495, 0.4695]); % scrub position 14
+    qWaypoints(:,:,15) = transl([0.747, -0.049, 0.072]); % sponge 15
+    qWaypoints(:,:,16) = transl([0.3203, -0.01, 0.423]) * trotx(-pi/2); % reset 16
+    qWaypoints(:,:,17) = transl([0.3203, -0.01, 0.423]) * trotx(-pi/2); % reset 17
+    qWaypoints(:,:,18) = transl([0.3203, -0.01, 0.423]) * trotx(-pi/2); % reset 18
+
+    qWaypointsJoints = [];
+    qWaypointsJoints = [qWaypointsJoints; myNiryoOne.model.ikcon(qWaypoints(:,:,1))];
     
-    for i = 1:(length(trSteps) - 1)
-        traj = jtraj(qWaypoints(i, :), qWaypoints(i + 1, :), steps);
-        qmatrix(rowIdx:rowIdx + steps - 1, :) = traj;
-        rowIdx = rowIdx + steps;
+    for i = 2:size(qWaypoints, 3)
+        qWaypointsJoints = [qWaypointsJoints; myNiryoOne.model.ikcon(qWaypoints(:,:,i))];
     end
-    
-    % Collision-Avoidance Logic
+    % Generate array
+    % niryoTrajectoryQmatrix = qMatrix;
+    qMatrix = InterpolateWaypointRadians(qWaypointsJoints,deg2rad(5));
     isCollision = true;
-    checkedTillWaypoint = 1;
-    niryoTrajectoryQmatrix = qmatrix; % Use initially generated trajectory
-    
-    while isCollision
-        startWaypoint = checkedTillWaypoint;
-        for j = startWaypoint:size(niryoTrajectoryQmatrix, 1) - 1
-            % Form and interpolate waypoint
-            qWaypoints = [niryoTrajectoryQmatrix(j, :); niryoTrajectoryQmatrix(j + 1, :)];
-            niryoTrajectoryQMatrixJoin = InterpolateWaypointRadians(qWaypoints, deg2rad(10));
-            
-            % Check for collision
-            if ~IsCollision(myNiryoOne, niryoTrajectoryQMatrixJoin, faces, vertex, faceNormals)
-                % If no collision, update trajectory and animate
-                disp('Updating trajectory with interpolated path:');
-                disp(size(niryoTrajectoryQmatrix(j, :)));
-                disp(size(niryoTrajectoryQMatrixJoin));
-                
-                niryoTrajectoryQmatrix = [niryoTrajectoryQmatrix(1:j, :); niryoTrajectoryQMatrixJoin; niryoTrajectoryQmatrix(j+1:end, :)];
-                myNiryoOne.model.animate(niryoTrajectoryQMatrixJoin);
+    checkedTillWaypoint = 1;     
 
+    % deltaT = 0.05; 
+     
+    while (isCollision)
+    startWaypoint = checkedTillWaypoint;
+        for i = startWaypoint:size(qWaypoints,1)-1                              % from startwaypoint to last one
+            % making array size according to 10 deg (differs for each
+            % trajectory)   
+            qMatrixJoin = InterpolateWaypointRadians(qWaypoints(i:i+1,:),deg2rad(10));
+            if ~IsCollision(myNiryoOne,qMatrixJoin,faces,vertex,faceNormals)
+                qMatrix = [qMatrix; qMatrixJoin]; %#ok<AGROW>
+                % robot.animate(qMatrixJoin);
+                size(qMatrix)
                 isCollision = false;
-                checkedTillWaypoint = j + 1;
-
-                % Attempt to join to the final goal
-                niryoTrajectoryQMatrixJoin = InterpolateWaypointRadians([niryoTrajectoryQmatrix(end, :); niryoTrajectoryQmatrix(j + 1, :)], deg2rad(10));
-                if ~IsCollision(myNiryoOne, niryoTrajectoryQMatrixJoin, faces, vertex, faceNormals)
-                    niryoTrajectoryQmatrix = [niryoTrajectoryQmatrix(1:j, :); niryoTrajectoryQMatrixJoin];
-                    break; % Break if no collision to final goal
+                checkedTillWaypoint = i+1;
+                % Now try and join to the final goal (q2)
+                qMatrixJoin = InterpolateWaypointRadians([qMatrix(end,:); q2],deg2rad(10));
+                if ~IsCollision(robot,qMatrixJoin,faces,vertex,faceNormals)
+                    qMatrix = [qMatrix;qMatrixJoin];
+                    % Reached goal without collision, so break out
+                    break;
                 end
             else
-                % Handle collision: Random pose not in collision
-                qRand = (2 * rand(1, 6) - 1) * pi;
-                while IsCollision(myNiryoOne, qRand, faces, vertex, faceNormals)
-                    qRand = (2 * rand(1, 6) - 1) * pi;
+                % Randomly pick a pose that is not in collision
+                qRand = (2 * rand(1,3) - 1) * pi;
+                while IsCollision(robot,qRand,faces,vertex,faceNormals)
+                    qRand = (2 * rand(1,3) - 1) * pi;
                 end
-                qWaypoints = [qWaypoints(1:j, :); qRand; qWaypoints(j+1:end, :)];
+                qWaypoints =[ qWaypoints(1:i,:); qRand; qWaypoints(i+1:end,:)];
                 isCollision = true;
                 break;
             end
         end
     end
-    
-    % Final Animation
-    for k = 1:size(niryoTrajectoryQmatrix, 1)
-        myNiryoOne.model.animate(niryoTrajectoryQmatrix(k, :));
-        drawnow();
-        pause(0.01);
-    end
+                                            
+    myNiryoOne.model.animate(qMatrix);
+    drawnow();  
+    pause(0.01); 
 end
+    
+    
 
 
 %% Call function to test it's running
@@ -361,7 +255,7 @@ end
 % [vertex, faces, faceNormals] = RectangularPrism(centerpnt - sideLength/2, centerpnt + sideLength/2, plotOptions);
 % % axis ([0.5, 0.1, -0.7, 0.7, 0, 1]);
 % 
-% niryoTrajectoryQmatrix = calculateNiryoTrajectory(myNiryoOne, steps, faces, vertex, faceNormals);
+% niryoTrajectoryQmatrix = calculateNiryoTrajectory(myNiryoOne, faces, vertex, faceNormals);
 % myNiryoOne.model.delay = 0;
 % for j = 1:size(niryoTrajectoryQmatrix, 1)
 %     myNiryoOne.model.animate(niryoTrajectoryQmatrix(j, :));
@@ -384,3 +278,52 @@ end
 %     %     ylabel('Joint Angle (rad)')
 %     % end
 % 
+
+
+ % Generate the trajectory and store it in the preallocated matrix
+    % rowIdx = 1;  
+%     for i = 1:(length(trSteps) - 1) 
+%         traj = jtraj(qWaypoints(i, :), qWaypoints(i + 1, :), steps);
+%         if (i >= 1 && i <= 10) || (i > 12)
+%             x = zeros(2,steps);
+%             s = lspb(0,1,steps);                                 % Create interpolation scalar
+% 
+%             % calculate cells for x
+%             for k = 1:steps-1
+%                 x(:,k) = trSteps{i}(1:2,4) * (1-s(k)) + trSteps{i+1}(1:2,4) * s(k);                  % Create trajectory in x-y plane
+%             end
+%             x(:,steps) = trSteps{i+1}(1:2,4);
+% 
+%             % RMRC trajectory
+%             for j = 1:steps-1
+%                 xdot = (x(:,j+1) - x(:,j))/deltaT;                             % Calculate velocity at discrete time step
+%                 J = myNiryoOne.model.jacob0(qmatrix(rowIdx + j - 1, :));            % Get the Jacobian at the current state
+%                 J = J(1:2,:);                           % Take only first 2 rows
+%                 qdot = pinv(J)*xdot;                             % Solve velocitities via RMRC
+%                 qmatrix(rowIdx + j,:) =  qmatrix(rowIdx + j - 1,:) + deltaT * qdot';                   % Update next joint state
+%             end
+%         end
+%         qmatrix(rowIdx:rowIdx + steps - 1, :) = traj;
+% 
+%         if i >= 11 && i <= 12 
+%             for j = 1:steps
+%                 traj(j, 6) = traj(j, 6) + deg2rad(360 * j / steps);  
+%             end
+%         end
+%         qmatrix(rowIdx:rowIdx + steps - 1, :) = traj;
+%         rowIdx = rowIdx + steps;
+%         disp(rowIdx);
+%     end
+% 
+%     niryoTrajectoryQmatrix = qmatrix;
+% 
+%     % myNiryoOne.model.delay = 0;
+% 
+%         % if CollisionIsDetected
+%         %     disp('Collision detected at step: ');
+%         %     disp(j);
+%         % end
+% 
+%     myNiryoOne.model.delay = 0;
+%     myNiryoOne.model.animate(niryoTrajectoryQmatrix(j,:));
+%     % niryoOneCurrentJointPosition = [niryoTrajectoryQmatrix(j,:); niryoTrajectoryQmatrix(j,:)]; 
