@@ -84,8 +84,8 @@ else
     myNiryoOne.model.animate(qMatrix);
 end
 
-for j = 1:size(qMatrix, 1)
-    myNiryoOne.model.animate(qMatrix(j, :));
+for j = 1:size(qMatrixJoin, 1)
+    myNiryoOne.model.animate(qMatrixJoin(j, :));
     drawnow(); 
     pause(0.01);  
 end
