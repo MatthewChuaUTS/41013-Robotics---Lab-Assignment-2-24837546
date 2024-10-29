@@ -1,4 +1,4 @@
-    % Initialize the robot
+% Initialize the robot
 myNiryoOne = niryoOne(transl(0.54, -0.01, 0));
 
 % Define the obstacle (adjust as needed for your environment)

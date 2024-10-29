@@ -2,15 +2,15 @@
 % This is based upon the output of questions 2.5 and 2.6
 % Given a robot model (robot), and trajectory (i.e. joint state vector) (qMatrix)
 % and triangle obstacles in the environment (faces,vertex,faceNormals)
-function CollisionIsDetected = IsCollision(robot,robotTrajectoryQmatrix,faces,vertex,faceNormals,returnOnceFound)
+function CollisionIsDetected = IsCollision(myNiryoOne,niryoTrajectoryQmatrix,faces,vertex,faceNormals,returnOnceFound)
     if nargin < 6
         returnOnceFound = true;
     end
     CollisionIsDetected = false;
 
-    for qIndex = 1:size(robotTrajectoryQmatrix,1)
+    for qIndex = 1:size(niryoTrajectoryQmatrix,1)
         % Get the transform of every joint (i.e. start and end of every link)
-        tr = GetLinkPoses(robotTrajectoryQmatrix(qIndex,:), robot);
+        tr = GetLinkPoses(niryoTrajectoryQmatrix(qIndex,:), myNiryoOne);
 
         % Go through each link and also each triangle face
         for i = 1 : size(tr,3)-1    

@@ -1,6 +1,5 @@
-function [robotTrajectoryQmatrix, collisionFlag] = calculateRobotTrajectory(robot, trMatrix, steps, faces, vertex, faceNormals)
+function [robotTrajectoryQmatrix] = calculateRobotTrajectory(robot, trMatrix, steps)
 
-    collisionFlag = 0;
     numSteps = size(trMatrix, 2);
     robotTrajectoryQmatrix = cell(1, numSteps - 1);
     qWaypoints = zeros(numSteps, 6);
@@ -11,14 +10,9 @@ function [robotTrajectoryQmatrix, collisionFlag] = calculateRobotTrajectory(robo
         qWaypoints(i, :) = robot.model.ikcon(trMatrix{i}, robotCurrentJointPosition);
         robotCurrentJointPosition = qWaypoints(i, :); 
     end
+
     for i = 1:(numSteps - 1)
         traj = jtraj(qWaypoints(i, :), qWaypoints(i + 1, :), steps);
-        if IsCollision(robot, traj, faces, vertex, faceNormals)
-            collisionFlag = 1;
-            disp('collision found during trajectory calculation at waypoint:');
-            disp(i);
-            break;
-        end
         robotTrajectoryQmatrix{i} = traj;
     end
 end
