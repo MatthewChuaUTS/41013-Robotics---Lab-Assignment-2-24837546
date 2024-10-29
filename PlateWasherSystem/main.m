@@ -39,7 +39,7 @@ Ur3Waypoints = {transl([0.747,-0.049,0.072]) * troty(pi) ... % sponge 1
     , transl([0.9346, -0.1223, 0.5269]) * troty(pi) ...  % reset 17
     , transl([0.9346, -0.1223, 0.5269]) * troty(pi)};  % reset 18
 
-env = environment();
+% env = environment();
 
 % Set up Robot 1
 niryoOneCurrentJointPosition = [0, 0, 0, 0, 0, 0];  

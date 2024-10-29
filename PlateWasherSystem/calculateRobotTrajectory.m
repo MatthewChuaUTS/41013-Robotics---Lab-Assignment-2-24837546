@@ -19,8 +19,9 @@
 %     end
 %     robotTrajectoryQmatrix = qmatrix;
 % end
-function [robotTrajectoryQmatrix] = calculateRobotTrajectory(robot, trMatrix, steps)
+function [robotTrajectoryQmatrix, collisionFlag] = calculateRobotTrajectory(robot, trMatrix, steps)
 
+    collisionFlag = 0; % 1 when collision is present, 0 when no collision
     numSteps = size(trMatrix, 2);
     robotTrajectoryQmatrix = cell(1, numSteps - 1);
     qWaypoints = zeros(numSteps, 6);
