@@ -1,5 +1,5 @@
 % Initialize the robot
-myNiryoOne = niryoOne();
+myNiryoOne = niryoOne(transl(0.54, -0.01, 0));
 
 % Define the obstacle (adjust as needed for your environment)
 centerpnt = [0.6, 0.6, 0.3];
@@ -90,11 +90,11 @@ for i = 1:length(trSteps)-1
     end
 end
 
-for j = 1:size(qMatrix, 1)
-    myNiryoOne.model.animate(qMatrix(j, :));
-    drawnow(); 
-    pause(0.01);  
-end
+% for j = 1:size(qMatrix, 1)
+%     myNiryoOne.model.animate(qMatrix(j, :));
+%     drawnow(); 
+%     pause(0.01);  
+% end
 
 %% IsCollision
 % This is based upon the output of questions 2.5 and 2.6
