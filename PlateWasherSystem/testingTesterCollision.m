@@ -64,7 +64,7 @@ for i = 1:length(trSteps)-1
                 %     break;
                 % end
             else
-                qRand = (2 * rand(1,6) - 1) .* myNiryoOne.model.qlim(:,2)'
+                qRand = (2 * rand(1,6) - 1) .* myNiryoOne.model.qlim(:,2)';
                 attempts = 0;
                 while IsCollision(myNiryoOne, qRand, faces, vertex, faceNormals) && attempts < 50
                     qRand = (2 * rand(1,6) - 1) .* myNiryoOne.model.qlim(:,2)';
