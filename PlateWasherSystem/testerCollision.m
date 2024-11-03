@@ -1,7 +1,8 @@
 % Initialize the robot
-myNiryoOne = niryoOne();
+myNiryoOne = niryoOne(transl(0.54, -0.01, 0));
 
 % Define the obstacle (adjust as needed for your environment)
+centerpnt = [0.4,0,0.3];
 side = 0.3;
 plotOptions.plotFaces = true;
 [vertex, faces, faceNormals] = RectangularPrism(centerpnt-side/2, centerpnt+side/2, plotOptions);
@@ -37,19 +38,19 @@ q2 = qWaypoints(end, :);
 
 % Initialize variables
 qMatrix = [];
-isCollision = true;
+collisionFlag = true;
 checkedTillWaypoint = 1;
 maxAttempts = 100; % Maximum number of attempts to find a collision-free path
 
 attemptCount = 0;
-while (isCollision && attemptCount < maxAttempts)
+while (collisionFlag && attemptCount < maxAttempts)
     startWaypoint = checkedTillWaypoint;
     for i = startWaypoint:size(qWaypoints,1)-1
-        qMatrixJoin = InterpolateWaypointRadians(qWaypoints(i:i+1,:), deg2rad(5));
+        qMatrixJoin = InterpolateWaypointRadians(qWaypoints(i:i+1,:), deg2rad(10));
         if ~IsCollision(myNiryoOne, qMatrixJoin, faces, vertex, faceNormals)
             qMatrix = [qMatrix; qMatrixJoin];
-            myNiryoOne.model.animate(qMatrixJoin);
-            isCollision = false;
+            % myNiryoOne.model.animate(qMatrixJoin);
+            collisionFlag = false;
             checkedTillWaypoint = i+1;
             
             qMatrixJoin = InterpolateWaypointRadians([qMatrix(end,:); q2], deg2rad(5));
@@ -58,7 +59,7 @@ while (isCollision && attemptCount < maxAttempts)
                 break;
             end
         else
-            qRand = (2 * rand(1,6) - 1) * pi; % .* myNiryoOne.model.qlim(:,2)'
+            qRand = (2 * rand(1,6) - 1) .* myNiryoOne.model.qlim(:,2)'
             attempts = 0;
             while IsCollision(myNiryoOne, qRand, faces, vertex, faceNormals) && attempts < 50
                 qRand = (2 * rand(1,6) - 1) .* myNiryoOne.model.qlim(:,2)';
@@ -69,11 +70,12 @@ while (isCollision && attemptCount < maxAttempts)
                 break;
             end
             qWaypoints = [qWaypoints(1:i,:); qRand; qWaypoints(i+1:end,:)];
-            isCollision = true;
+            collisionFlag = true;
             break;
         end
     end
     attemptCount = attemptCount + 1;
+    disp(attemptCount); 
 end
 
 if attemptCount >= maxAttempts

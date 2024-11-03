@@ -2,7 +2,7 @@
 myNiryoOne = niryoOne();
 
 % Define the obstacle (adjust as needed for your environment)
-centerpnt = [0, 0.4, 0.3];
+centerpnt = [2,0,-0.5];
 side = 0.3;
 plotOptions.plotFaces = true;
 [vertex, faces, faceNormals] = RectangularPrism(centerpnt-side/2, centerpnt+side/2, plotOptions);
@@ -38,19 +38,19 @@ q2 = qWaypoints(end, :);
 
 % Initialize variables
 qMatrix = [];
-isCollision = true;
+collisionFlag = true;
 checkedTillWaypoint = 1;
 maxAttempts = 100; % Maximum number of attempts to find a collision-free path
 
 attemptCount = 0;
-while (isCollision && attemptCount < maxAttempts)
+while (collisionFlag && attemptCount < maxAttempts)
     startWaypoint = checkedTillWaypoint;
     for i = startWaypoint:size(qWaypoints,1)-1
-        qMatrixJoin = InterpolateWaypointRadians(qWaypoints(i:i+1,:), deg2rad(5));
+        qMatrixJoin = InterpolateWaypointRadians(qWaypoints(i:i+1,:), deg2rad(10));
         if ~IsCollision(myNiryoOne, qMatrixJoin, faces, vertex, faceNormals)
             qMatrix = [qMatrix; qMatrixJoin];
-            myNiryoOne.model.animate(qMatrixJoin);
-            isCollision = false;
+            % myNiryoOne.model.animate(qMatrixJoin);
+            collisionFlag = false;
             checkedTillWaypoint = i+1;
             
             qMatrixJoin = InterpolateWaypointRadians([qMatrix(end,:); q2], deg2rad(5));
@@ -70,7 +70,7 @@ while (isCollision && attemptCount < maxAttempts)
                 break;
             end
             qWaypoints = [qWaypoints(1:i,:); qRand; qWaypoints(i+1:end,:)];
-            isCollision = true;
+            collisionFlag = true;
             break;
         end
     end
@@ -84,8 +84,8 @@ else
     myNiryoOne.model.animate(qMatrix);
 end
 
-for j = 1:size(qMatrixJoin, 1)
-    myNiryoOne.model.animate(qMatrixJoin(j, :));
+for j = 1:size(qMatrix, 1)
+    myNiryoOne.model.animate(qMatrix(j, :));
     drawnow(); 
     pause(0.01);  
 end

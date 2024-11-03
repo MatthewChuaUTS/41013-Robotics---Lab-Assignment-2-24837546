@@ -1,0 +1,56 @@
+environment();
+niryoOneCurrentJointPosition = [0, 0, 0, 0, 0, 0];  
+myNiryoOne = niryoOne(transl(0.54, -0.01, 0));  
+myNiryoOne.model.animate(niryoOneCurrentJointPosition);  
+
+trSteps = {transl([0.22,0.061,0.195]) ...
+    , transl([0.358,0.196,0.244]) ...
+    , transl([0.358,0.196,-0.005]) ...
+    , transl([0.358,0.196,0.406]) ...
+    , transl([0.6975,0.263,0.3915]) ...
+    , transl([0.6975,0.263,0.3915]) ...
+    , transl([0.6975,0.263,0.3915]) ...
+    , transl([0.6975,0.263,0.3915]) ...
+    , transl([0.6975,0.263,0.3915]) ...
+    , transl([0.747,-0.049,0.072]) ...
+    , transl([0.726,0.1495,0.4695]) ...
+    , transl([0.726,0.1495,0.4695]) ...
+    , transl([0.726,0.1495,0.4695]) ...
+    , transl([0.726,0.1495,0.4695]) ...
+    , transl([0.747,-0.049,0.072]) ... 
+    , transl([0.3203,-0.01,0.423]) ...
+    , transl([0.3203,-0.01,0.423]) ...
+    , transl([0.3203,-0.01,0.423])};
+
+% Convert trSteps to qWaypoints
+qWaypoints = zeros(length(trSteps), 6); % 18x6
+for i = 1:length(trSteps)
+    qWaypoints(i, :) = myNiryoOne.model.ikcon(trSteps{i});
+    qMatrix = [];
+    q1 = [];
+    q2 = [];
+
+    for i = 1:length(trSteps)-1
+        q1 = qWaypoints(i, :);
+        q2 = qWaypoints(i + 1, :);
+        q1MatrixRough = jtraj(qWaypoints(i,:),qWaypoints(i+1,:),steps);
+        q2MatrixRough = jtraj(qWaypoints(i:end,:),qWaypoints(i+1:end,:),steps);
+        q1 = [q1;qMatrixRough];
+        q2 = [q2;q2MatrixRough];
+    end
+end
+
+        % steps = 50; % You can adjust this value for smoother or faster animation
+        % qInterpolated = interp1(1:2, [q1; q2], linspace(1, 2, steps), 'linear');
+        % 
+        % % Append the interpolated segment to qMatrix
+        % qMatrix = [qMatrix; qInterpolated];
+
+
+
+% Animate the robot
+for i = 1:size(qMatrix, 1)
+    myNiryoOne.model.animate(qMatrix(i, :));
+    drawnow;
+    pause(0.01); % Adjust this value to control animation speed
+end
