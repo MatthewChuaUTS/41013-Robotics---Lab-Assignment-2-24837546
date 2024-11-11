@@ -1,6 +1,6 @@
 function [robotTrajectoryQmatrix] = calculateRobotTrajectory(robot, trMatrix, steps)
 
-    numSteps = size(trMatrix, 2); % gets the amount of joints needed to calculate
+    numSteps = size(trMatrix, 2);
     robotTrajectoryQmatrix = cell(1, numSteps - 1);
     qWaypoints = zeros(numSteps, 6);
     robotCurrentJointPosition = robot.model.getpos();
@@ -11,7 +11,7 @@ function [robotTrajectoryQmatrix] = calculateRobotTrajectory(robot, trMatrix, st
         robotCurrentJointPosition = qWaypoints(i, :); 
     end
     for i = 1:(numSteps - 1)
-        traj = jtraj(qWaypoints(i, :), qWaypoints(i + 1, :), steps); % Quintic Polynomial Interpolation
+        traj = jtraj(qWaypoints(i, :), qWaypoints(i + 1, :), steps);
         robotTrajectoryQmatrix{i} = traj;
     end
 end

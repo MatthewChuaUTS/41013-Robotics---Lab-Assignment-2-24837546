@@ -1,65 +1,34 @@
 %% LinePlaneIntersection
-% This function calculates the intersection point between a line segment
-% and a plane. It checks various conditions to determine the nature of
-% the intersection.
-
-% Inputs:
-% - planeNormal: A vector normal to the plane.
-% - pointOnPlane: A point on the plane.
-% - point1OnLine: The first point defining the line segment.
-% - point2OnLine: The second point defining the line segment.
-
-% Outputs:
-% - intersectionPoint: The point of intersection (if any) between the line
-%   segment and the plane.
-% - check: A flag indicating the type of intersection:
-%   0 - No intersection.
-%   1 - Intersection between the two points of the segment.
-%   2 - The entire segment lies in the plane.
-%   3 - Intersection exists but lies outside the line segment.
-
-function [intersectionPoint, check] = LinePlaneIntersection(planeNormal, pointOnPlane, point1OnLine, point2OnLine)
+% Given a plane (normal and point) and two points that make up another line, get the intersection
+% Check == 0 if there is no intersection
+% Check == 1 if there is a line plane intersection between the two points
+% Check == 2 if the segment lies in the plane (always intersecting)
+% Check == 3 if there is intersection point which lies outside line segment
+function [intersectionPoint,check] = LinePlaneIntersection(planeNormal,pointOnPlane,point1OnLine,point2OnLine)
     
-    % Initialize the intersection point to origin (default value)
     intersectionPoint = [0 0 0];
-    
-    % Direction vector of the line segment
     u = point2OnLine - point1OnLine;
-    
-    % Vector from a point on the line to a point on the plane
     w = point1OnLine - pointOnPlane;
-    
-    % Dot product of the plane normal and the line direction vector
-    D = dot(planeNormal, u);
-    
-    % Negative dot product of the plane normal and vector w
-    N = -dot(planeNormal, w);
-    
-    % Initialize check value (default: no intersection)
+    D = dot(planeNormal,u);
+    N = -dot(planeNormal,w);
     check = 0; %#ok<NASGU>
-    
-    % Check if the line segment is parallel to the plane
-    if abs(D) < 10^-7
-        % Check if the segment lies in the plane
-        if N == 0
-            check = 2; % The segment lies in the plane
+    if abs(D) < 10^-7        % The segment is parallel to plane
+        if N == 0           % The segment lies in plane
+            check = 2;
             return
         else
-            check = 0; % The segment is parallel and not in the plane
+            check = 0;       %no intersection
             return
         end
     end
     
-    % Compute the intersection parameter (sI)
+    %compute the intersection parameter
     sI = N / D;
+    intersectionPoint = point1OnLine + sI.*u;
     
-    % Calculate the intersection point
-    intersectionPoint = point1OnLine + sI .* u;
-    
-    % Determine the type of intersection
     if (sI < 0 || sI > 1)
-        check = 3; % Intersection point lies outside the segment
+        check= 3;          %The intersection point  lies outside the segment, so there is no intersection
     else
-        check = 1; % Intersection point lies within the segment
+        check=1;
     end
-end
+end           
